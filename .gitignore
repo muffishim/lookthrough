@@ -1,0 +1,13 @@
+# Daml build output
+.daml/
+*.dar
+
+# Node
+node_modules/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

@@ -1,0 +1,8 @@
+name: lookthrough
+version: 0.0.1
+description: Permissioned disclosure layer for tokenized private funds on Canton
+sdk-version: 3.5.2
+source: daml
+dependencies:
+  - daml-prim
+  - daml-stdlib

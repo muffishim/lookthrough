@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lookthrough, prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #FBFAF8;
+    --ink: #16161A;
+    --muted: #5F5C56;
+    --rule: #DCD9D2;
+    --rule-strong: #8A867E;
+    --stale: #9A2B1E;
+    --current: #2F5D3A;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  a { color: var(--ink); }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* Masthead ------------------------------------------------------- */
+
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 20px;
+    padding: 28px 0 14px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .wordmark {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-right: auto;
+  }
+
+  .masthead .fund {
+    font-family: var(--serif);
+    font-size: 17px;
+  }
+
+  .role-tag {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+  }
+
+  /* Sample data marker ---------------------------------------------- */
+
+  .sampledata {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .sampledata b {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--stale);
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    padding: 1px 6px;
+  }
+
+  /* Provenance strip ------------------------------------------------ */
+
+  .provenance {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 40px;
+    padding: 16px 0 18px;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  .prov-item { min-width: 190px; }
+
+  .prov-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    display: block;
+  }
+
+  .prov-value {
+    display: block;
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.25;
+  }
+
+  .prov-note { display: block; font-size: 12.5px; color: var(--muted); }
+
+  .is-stale { color: var(--stale); }
+  .is-current { color: var(--current); }
+
+  /* Sections -------------------------------------------------------- */
+
+  section { padding: 30px 0; border-bottom: 1px solid var(--rule); }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+
+  h1.focal {
+    font-family: var(--serif);
+    font-size: 30px;
+    line-height: 1.18;
+    font-weight: 400;
+    margin: 0 0 6px;
+    max-width: 22ch;
+  }
+
+  .focal-lede { margin: 0 0 20px; max-width: 62ch; color: var(--muted); }
+
+  /* Figures --------------------------------------------------------- */
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px 28px;
+  }
+
+  .figure-label {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .figure-value {
+    font-family: var(--serif);
+    font-size: 23px;
+    line-height: 1.15;
+  }
+
+  /* The as-at rule: the identity motif ------------------------------ */
+
+  .asat {
+    display: block;
+    margin-top: 6px;
+    padding-left: 9px;
+    border-left: 1px solid var(--rule-strong);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .asat.stale { border-left-color: var(--stale); color: var(--stale); }
+
+  /* Restricted stamp ------------------------------------------------ */
+
+  .restricted {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--stale);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+  }
+
+  /* Tables ---------------------------------------------------------- */
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+  caption {
+    text-align: left;
+    font-size: 12.5px;
+    color: var(--muted);
+    padding-bottom: 10px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 9px 12px 9px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    border-bottom-color: var(--rule-strong);
+  }
+
+  td.num, th.num { text-align: right; padding-right: 0; }
+
+  td.mono, .mono { font-family: var(--mono); font-size: 12.5px; }
+
+  tr.is-blocked td { color: var(--stale); }
+
+  /* Controls -------------------------------------------------------- */
+
+  .controls { padding: 22px 0 0; }
+
+  .controls-fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+
+  .controls-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    padding: 0;
+    margin: 0 0 8px;
+  }
+
+  .segmented { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .segmented button {
+    font: inherit;
+    font-size: 13.5px;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--rule-strong);
+    border-radius: 2px;
+    padding: 7px 13px;
+    cursor: pointer;
+  }
+
+  .segmented button:hover { background: #F1EEE8; }
+
+  .segmented button[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .segmented button[data-role="off"][aria-pressed="true"] {
+    background: var(--stale);
+    border-color: var(--stale);
+    color: var(--paper);
+  }
+
+  input[type="range"] { width: 100%; max-width: 420px; accent-color: var(--ink); }
+
+  .range-ends {
+    display: flex;
+    justify-content: space-between;
+    max-width: 420px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .btn {
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 2px;
+    padding: 10px 18px;
+    cursor: pointer;
+  }
+
+  .btn:hover { background: #2E2E34; }
+
+  .btn:disabled { background: #C9C5BC; border-color: #C9C5BC; cursor: not-allowed; }
+
+  .btn-quiet {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule-strong);
+  }
+
+  .btn-quiet:hover { background: #F1EEE8; }
+
+  /* Decision block -------------------------------------------------- */
+
+  .decision {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+  }
+
+  .decision p { margin: 0; max-width: 52ch; }
+
+  .outcome {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-left: 2px solid var(--rule-strong);
+    background: #F4F1EB;
+    max-width: 70ch;
+  }
+
+  .outcome.blocked { border-left-color: var(--stale); }
+  .outcome.done { border-left-color: var(--current); }
+
+  .outcome p { margin: 0; font-size: 14px; }
+  .outcome + .outcome { margin-top: 8px; }
+
+  /* States ---------------------------------------------------------- */
+
+  .state {
+    padding: 40px 0;
+    color: var(--muted);
+  }
+
+  .state h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 21px;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+
+  .state p { margin: 0 0 16px; max-width: 58ch; }
+
+  .loading-line {
+    display: inline-block;
+    width: 190px;
+    height: 11px;
+    background: #EAE6DE;
+    border-radius: 2px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .visually-hidden-focusable:not(:focus):not(:focus-within) {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+  }
+
+  /* Mobile ---------------------------------------------------------- */
+
+  @media (max-width: 720px) {
+    .wrap { padding: 0 16px 72px; }
+    .wordmark { font-size: 19px; }
+    h1.focal { font-size: 25px; }
+    .figure-value { font-size: 20px; }
+    .asat { white-space: normal; }
+    th, td { padding: 8px 8px 8px 0; }
+    .stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .stack tr { display: block; border-bottom: 1px solid var(--rule); padding: 10px 0; }
+    .stack td { display: block; border: 0; padding: 3px 0; text-align: left; }
+    .stack td.num { text-align: left; }
+    .stack td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      text-align: left;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="wordmark">Lookthrough</div>
+    <div class="fund">Azim Fund I</div>
+    <div class="role-tag" id="roleTag">Limited partner, standard rights</div>
+  </header>
+
+  <div class="sampledata">
+    <b>Prototype, sample data</b>
+    <span>Azim Fund I is fictional. Every figure, party, and ledger reference on this page is invented to demonstrate the interface, and none of it is real. See <span class="mono">README.md</span> for what would be true in production.</span>
+  </div>
+
+  <main id="main" tabindex="-1">
+    <div class="state" id="boot"><p>Reading the ledger.</p></div>
+  </main>
+
+  <div class="controls">
+    <fieldset class="controls-fieldset">
+      <legend class="controls-label">Read as</legend>
+      <div class="segmented" id="roleSwitch"></div>
+    </fieldset>
+
+    <fieldset class="controls-fieldset">
+      <legend class="controls-label">Reconstruct as at</legend>
+      <input type="range" id="asAt" min="0" max="5" value="5" step="1"
+             aria-describedby="asAtLabel" />
+      <div class="range-ends" aria-hidden="true"><span id="asAtMin"></span><span id="asAtMax"></span></div>
+      <p id="asAtLabel" class="prov-note" style="margin:8px 0 0"></p>
+    </fieldset>
+
+    <fieldset class="controls-fieldset">
+      <legend class="controls-label">Simulate a disclosure failure</legend>
+      <div class="segmented" id="staleness">
+        <button type="button" data-role="on" aria-pressed="false">Valuation current, 23 Sep 2026</button>
+        <button type="button" data-role="off" aria-pressed="false">Valuation 94 days old, 23 Jun 2026</button>
+      </div>
+      <p class="prov-note" style="margin:8px 0 0;max-width:58ch">This moves the as-at date rather than hiding anything. Staleness is derived from the date, never asserted, so the provenance strip, the as-at markers and the fund's willingness to accept a redemption can never disagree with each other.</p>
+    </fieldset>
+
+    <fieldset class="controls-fieldset">
+      <legend class="controls-label">Index availability</legend>
+      <div class="segmented" id="indexControl"></div>
+      <p class="prov-note" style="margin:8px 0 0;max-width:58ch">The index rebuilds your view from the ledger. If it is down, the ledger is still fine, and the page says so rather than showing an empty or partial view.</p>
+    </fieldset>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ---------------------------------------------------------------- *
+ * Sample data. Fictional. Not real. See README.md.
+ * ---------------------------------------------------------------- */
+
+var TODAY = new Date("2026-09-25T09:14:00Z");
+
+var FUND = {
+  name: "Azim Fund I",
+  gp: "Meridian Capital",
+  administrator: "Kwan and Associates",
+  launched: "2023-10-01",
+  commitments: 62500000,
+  lpCount: 11
+};
+
+var VALUATIONS = [
+  { date: "2025-12-31", navPerUnit: 1.00, distributionsPerUnit: 0.42 },
+  { date: "2026-03-31", navPerUnit: 1.00, distributionsPerUnit: 0.42 },
+  { date: "2026-06-23", navPerUnit: 1.00, distributionsPerUnit: 0.42 },
+  { date: "2026-06-30", navPerUnit: 1.00, distributionsPerUnit: 0.42 },
+  { date: "2026-07-31", navPerUnit: 1.00, distributionsPerUnit: 0.42 },
+  { date: "2026-08-31", navPerUnit: 1.00, distributionsPerUnit: 0.42 },
+  { date: "2026-09-23", navPerUnit: 1.00, distributionsPerUnit: 0.42 }
+];
+
+var STALE_INDEX = 2;
+var CURRENT_INDEX = VALUATIONS.length - 1;
+
+var MATERIAL_EVENT = {
+  positionName: "Northwind Robotics",
+  heldAt: 41200000,
+  fundSharePct: 0.4,
+  lowPct: 80,
+  highPct: 140,
+  disclosedAt: "2026-09-25T09:14:00Z",
+  detailRestricted: true
+};
+
+var READERS = [
+  {
+    id: "lp-standard",
+    label: "LP, standard rights",
+    roleTag: "Limited partner, standard rights",
+    kind: "lp",
+    name: "Tomas",
+    party: "AzimLP::1220a4f7c9b31d8e05a6f",
+    commitment: 250000,
+    units: 250000,
+    unitsPct: 0.4,
+    rights: "standard",
+    sinceInception: "2023-10-01"
+  },
+  {
+    id: "lp-enhanced",
+    label: "LP, enhanced rights",
+    roleTag: "Limited partner, enhanced information rights",
+    kind: "lp",
+    name: "Priya",
+    party: "AzimLP::1220be81c04f7a293d5e1",
+    commitment: 4000000,
+    units: 4000000,
+    unitsPct: 6.4,
+    rights: "enhanced",
+    sinceInception: "2023-10-01"
+  },
+  {
+    id: "gp",
+    label: "General partner",
+    roleTag: "General partner, Meridian Capital",
+    kind: "gp",
+    name: "Meridian",
+    party: "AzimGP::12209d4c1b8e77a2f04d9",
+    commitment: null,
+    units: null,
+    unitsPct: null,
+    rights: "full",
+    sinceInception: "2023-10-01"
+  },
+  {
+    id: "auditor",
+    label: "Auditor",
+    roleTag: "Auditor, Kwan and Associates",
+    kind: "auditor",
+    name: "Kwan",
+    party: "AzimAudit::1220a7f30c6b2e91d4aa",
+    commitment: null,
+    units: null,
+    unitsPct: null,
+    rights: "full",
+    sinceInception: "2024-06-01"
+  },
+  {
+    id: "prospective",
+    label: "Prospective LP",
+    roleTag: "Prospective limited partner, in diligence",
+    kind: "prospective",
+    name: "Prospective",
+    party: null,
+    commitment: null,
+    units: null,
+    unitsPct: null,
+    rights: "sanitised",
+    sinceInception: null
+  },
+  {
+    id: "exited",
+    label: "LP, fully redeemed",
+    roleTag: "Limited partner, position fully redeemed",
+    kind: "exited",
+    name: "Dag",
+    party: "AzimLP::1220c7e4a2b6d190f83c",
+    commitment: 0,
+    units: 0,
+    unitsPct: 0,
+    rights: "standard",
+    sinceInception: "2023-10-01",
+    redeemedOn: "2026-04-01T10:30:00Z"
+  }
+];
+
+var DISCLOSURE_LOG = [
+  { at: "2026-09-25T09:14:00Z", kind: "Material valuation event", recipients: "11 of 11 LPs, identical payload", payload: "8c41d0b7e2a9", viewsWithin2h: 3 },
+  { at: "2026-06-30T17:02:00Z", kind: "Quarterly valuation", recipients: "11 of 11 LPs, identical payload", payload: "5be7a10c93df", viewsWithin2h: 7 },
+  { at: "2026-04-01T10:30:00Z", kind: "Management fee accrual", recipients: "11 of 11 LPs, identical payload", payload: "2f9d4b6ea810", viewsWithin2h: 4 },
+  { at: "2026-01-02T09:00:00Z", kind: "Distribution notice", recipients: "11 of 11 LPs, identical payload", payload: "77c0a3e1b4d9", viewsWithin2h: 9 }
+];
+
+/* ---------------------------------------------------------------- *
+ * Derived state
+ * ---------------------------------------------------------------- */
+
+var state = {
+  readerId: "lp-standard",
+  asAtIndex: CURRENT_INDEX,
+  indexError: false,
+  redemption: null
+};
+
+var money = function (n) {
+  return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+};
+
+var money2 = function (n) {
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+var daysBetween = function (iso, to) {
+  var a = new Date(iso + "T00:00:00Z").getTime();
+  var b = new Date(to + "T00:00:00Z").getTime();
+  return Math.round((b - a) / 86400000);
+};
+
+var fmtDate = function (iso) {
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var d = new Date(iso + "T00:00:00Z");
+  return d.getUTCDate() + " " + months[d.getUTCMonth()] + " " + d.getUTCFullYear();
+};
+
+var fmtStamp = function (iso) {
+  var d = new Date(iso);
+  var hh = String(d.getUTCHours()).padStart(2, "0");
+  var mm = String(d.getUTCMinutes()).padStart(2, "0");
+  return fmtDate(iso.slice(0, 10)) + " " + hh + ":" + mm + " UTC";
+};
+
+var esc = function (s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+};
+
+/* The identity motif: every figure carries the date it was true as at. */
+var asat = function (iso, isStale) {
+  return '<span class="asat' + (isStale ? " stale" : "") + '">as at ' + fmtDate(iso) +
+    (isStale ? ", " + daysBetween(iso, TODAY.toISOString().slice(0, 10)) + " days old" : "") + "</span>";
+};
+
+var figure = function (label, value, iso, isStale) {
+  return '<div><span class="figure-label">' + esc(label) + "</span>" +
+    '<span class="figure-value">' + esc(value) + "</span>" + asat(iso, isStale) + "</div>";
+};
+
+var currentReader = function () {
+  for (var i = 0; i < READERS.length; i++) {
+    if (READERS[i].id === state.readerId) return READERS[i];
+  }
+  return READERS[0];
+};
+
+var activeValuation = function () {
+  return VALUATIONS[state.asAtIndex];
+};
+
+var valuationAgeDays = function () {
+  return daysBetween(activeValuation().date, TODAY.toISOString().slice(0, 10));
+};
+
+var isStale = function () {
+  return valuationAgeDays() > 30;
+};
+
+/* ---------------------------------------------------------------- *
+ * Views
+ * ---------------------------------------------------------------- */
+
+function provenanceStrip() {
+  var v = activeValuation();
+  var age = valuationAgeDays();
+  var stale = isStale();
+  var disclosureAge = daysBetween("2026-09-25", TODAY.toISOString().slice(0, 10));
+
+  return '<div class="provenance">' +
+    '<div class="prov-item">' +
+      '<span class="prov-label">Last valuation</span>' +
+      '<span class="prov-value ' + (stale ? "is-stale" : "is-current") + '">' + fmtDate(v.date) + "</span>" +
+      '<span class="prov-note">' + age + " days ago" + (stale ? ". Outside the 30 day disclosure window." : ". Within the 30 day window.") + "</span>" +
+    "</div>" +
+    '<div class="prov-item">' +
+      '<span class="prov-label">Most recent disclosure</span>' +
+      '<span class="prov-value ' + (stale ? "is-stale" : "is-current") + '">' + fmtStamp("2026-09-25T09:14:00Z") + "</span>" +
+      '<span class="prov-note">Material valuation event, ' + (stale ? "0 of 11 LPs have opened it." : "11 LPs entitled, identical payload.") + "</span>" +
+    "</div>" +
+    '<div class="prov-item">' +
+      '<span class="prov-label">Your read access</span>' +
+      '<span class="prov-value">' + esc(currentReader().rights) + "</span>" +
+      '<span class="prov-note">Party <span class="mono">' + esc(currentReader().party || "not admitted") + "</span></span>" +
+    "</div>" +
+  "</div>";
+}
+
+function materialEventBlock() {
+  var e = MATERIAL_EVENT;
+  var share = e.heldAt * (e.fundSharePct / 100);
+  return "<section>" +
+    '<p class="section-label">Material event</p>' +
+    '<h1 class="focal">A confidential event could move your position by 80 to 140 percent.</h1>' +
+    '<p class="focal-lede">The fund disclosed the impact and withheld the transaction. You have enough to decide. You do not have enough to expose Meridian.</p>' +
+    '<div class="figures">' +
+      figure("Your share of the position", money(share), TODAY.toISOString().slice(0, 10), false) +
+      figure("Potential valuation impact", "+" + e.lowPct + "% to +" + e.highPct + "%", TODAY.toISOString().slice(0, 10), false) +
+      '<div><span class="figure-label">Underlying event</span>' +
+        '<span class="figure-value"><span class="restricted">Restricted</span></span>' +
+        '<span class="asat">withheld by the general partner under the fund agreement</span></div>' +
+    "</div>" +
+  "</section>";
+}
+
+function lpPositionBlock(r) {
+  var v = activeValuation();
+  var totalPerUnit = v.navPerUnit + v.distributionsPerUnit;
+  var navValue = r.units * v.navPerUnit;
+  var totalValue = r.units * totalPerUnit;
+  var distValue = r.units * v.distributionsPerUnit;
+  var yearsHeld = 3;
+  var fees = r.commitment * 0.015 * yearsHeld;
+  var eventShare = MATERIAL_EVENT.heldAt * (MATERIAL_EVENT.fundSharePct / 100);
+  var stale = isStale();
+  var iso = v.date;
+
+  return "<section>" +
+    '<p class="section-label">Your position</p>' +
+    '<div class="figures">' +
+      figure("Total value of your position", money(totalValue), iso, stale) +
+      figure("of which struck net asset value", money(navValue), iso, stale) +
+      figure("of which distributions received", money(distValue), iso, stale) +
+      figure("Management fees accrued", money(fees), iso, stale) +
+      figure("Commitment", money(r.commitment), "2023-10-01", false) +
+      figure("Units held", r.units.toLocaleString("en-US"), "2023-10-01", false) +
+      figure("Share of fund", r.unitsPct.toFixed(1) + "%", "2023-10-01", false) +
+      figure("Net asset value per unit", money2(v.navPerUnit), iso, stale) +
+      figure("Distributions per unit", money2(v.distributionsPerUnit), iso, stale) +
+    "</div>" +
+    '<p class="prov-note" style="margin-top:20px;max-width:66ch">Total value is ' + money2(totalPerUnit) +
+      " per unit, being the struck net asset value plus distributions received. Fees are 1.5 percent per year on your commitment for " +
+      yearsHeld + " years. Your share of the material event above is not included, because it has not been struck as a valuation." +
+      (stale ? " Every figure carrying a struck date is " + valuationAgeDays() + " days old." : "") + "</p>" +
+  "</section>";
+}
+
+function decisionBlock(r) {
+  var stale = isStale();
+  var status = state.redemption;
+
+  var outcome = "";
+  if (status === "blocked") {
+    outcome = '<div class="outcome blocked" role="status"><p><b>Redemption refused by the fund contract.</b> A redemption requires a valuation struck within 30 days, and the last one is ' +
+      valuationAgeDays() + ' days old. This is not a Lookthrough policy. The rule is in the fund agreement and the ledger enforces it.</p></div>';
+  } else if (status === "done") {
+    outcome = '<div class="outcome done" role="status"><p><b>Redemption accepted.</b> A current valuation exists, so the fund contract permitted it. In production this would submit a transaction against your party and wait for the ledger to confirm.</p></div>';
+  } else if (status === "pending") {
+    outcome = '<div class="state" style="padding:20px 0"><span class="loading-line" aria-hidden="true"></span><p class="sr-only">Submitting to the ledger.</p></div>';
+  }
+
+  return "<section>" +
+    '<p class="section-label">Your decision</p>' +
+    '<div class="decision">' +
+      "<p>The fund has a 30 day redemption window open. " +
+      (stale
+        ? "You would be redeeming into a book whose last struck valuation is " + valuationAgeDays() + " days old, while an undisclosed material event is open."
+        : "The last valuation is within the disclosure window, so the fund contract will accept a redemption.") + "</p>" +
+      '<button type="button" class="btn" id="redeemBtn"' + (status === "pending" ? " disabled" : "") + ">" +
+        (status === "pending" ? "Submitting" : "Request redemption of " + money(100000)) +
+      "</button>" +
+    "</div>" +
+    outcome +
+  "</section>";
+}
+
+function restrictedBlock() {
+  var rows = [
+    ["Identity of the counterparty", "The fund is in a bilateral negotiation. Disclosure would expose Meridian's position in the transaction."],
+    ["Agreed consideration", "The fund agreement permits disclosure of impact, not of price, where a transaction is unannounced."],
+    ["The other LPs in this fund", "You hold 0.4 percent. Knowing the other 10.6 percent would let you time a redemption against them."],
+    ["Meridian's other funds", "Not related to your commitment and not disclosed to any LP in this fund."]
+  ];
+  return "<section>" +
+    '<p class="section-label">What you are not seeing, and why</p>' +
+    '<table class="stack"><caption>Withheld items are listed rather than hidden, so you know what you are not being told.</caption>' +
+      "<thead><tr><th>Item</th><th>Reason for withholding</th></tr></thead><tbody>" +
+      rows.map(function (row) {
+        return "<tr><td data-label='Item'><span class='restricted'>" + esc(row[0]) + "</span></td>" +
+               "<td data-label='Reason'>" + esc(row[1]) + "</td></tr>";
+      }).join("") +
+      "</tbody></table>" +
+  "</section>";
+}
+
+function gpBookBlock() {
+  var top3 = 33875000;
+  return "<section>" +
+    '<p class="section-label">The book</p>' +
+    '<div class="figures">' +
+      figure("Total commitments", money(FUND.commitments), "2026-09-23", isStale()) +
+      figure("Limited partners", String(FUND.lpCount), "2026-09-23", isStale()) +
+      figure("Top 3 concentration", ((top3 / FUND.commitments) * 100).toFixed(1) + "%", "2026-09-23", isStale()) +
+      figure("Open redemption window", "30 days", TODAY.toISOString().slice(0, 10), false) +
+    "</div>" +
+    '<p class="prov-note" style="margin-top:20px;max-width:66ch">You are seeing the whole book. None of the 11 LPs can.</p>' +
+  "</section>";
+}
+
+function disclosureLogBlock() {
+  var rows = DISCLOSURE_LOG.map(function (entry) {
+    var identical = entry.recipients.indexOf("identical") > -1;
+    return "<tr" + (identical ? "" : " class='is-blocked'") + ">" +
+      "<td data-label='Disclosed at' class='mono'>" + esc(fmtStamp(entry.at)) + "</td>" +
+      "<td data-label='Disclosure'>" + esc(entry.kind) + "</td>" +
+      "<td data-label='Recipients'>" + esc(entry.recipients) + "</td>" +
+      "<td data-label='Payload' class='mono'>" + esc(entry.payload) + "</td>" +
+      "<td data-label='Opened within 2h' class='num'>" + entry.viewsWithin2h + " of 11</td>" +
+    "</tr>";
+  }).join("");
+
+  return "<section>" +
+    '<p class="section-label">Disclosure log</p>' +
+    '<h1 class="focal">What you told them, to whom, and when.</h1>' +
+    '<p class="focal-lede">An append-only record. If two LPs holding the same rights had received different payloads, that row would read differently and would be flagged.</p>' +
+    '<table class="stack"><caption>Four most recent disclosures. Payload identifiers are the on-ledger contract references.</caption>' +
+      "<thead><tr><th>Disclosed at</th><th>Disclosure</th><th>Recipients</th><th>Payload</th><th class='num'>Opened within 2h</th></tr></thead>" +
+      "<tbody>" + rows + "</tbody></table>" +
+  "</section>";
+}
+
+function auditSeriesBlock() {
+  var rows = VALUATIONS.map(function (v) {
+    var isActive = v.date === activeValuation().date;
+    var breached = isActive && isStale();
+    return "<tr" + (breached ? " class='is-blocked'" : "") + ">" +
+      "<td data-label='As at' class='mono'>" + esc(fmtDate(v.date)) + "</td>" +
+      "<td data-label='NAV per unit' class='num'>" + money2(v.navPerUnit) + "</td>" +
+      "<td data-label='Distributions' class='num'>" + money2(v.distributionsPerUnit) + "</td>" +
+      "<td data-label='Restated' class='num'>" + (isActive ? "no" : "no") + "</td>" +
+      "<td data-label='Source'>" + (breached ? "<span class='restricted'>outside window</span>" : "ledger") + "</td>" +
+    "</tr>";
+  }).join("");
+
+  return "<section>" +
+    '<p class="section-label">Reconstruction</p>' +
+    '<h1 class="focal">The series has not moved.</h1>' +
+    '<p class="focal-lede">Every valuation the fund has ever disclosed, as it stood on that date. If a figure had been restated, the earlier value would still be here and the row would say so.</p>' +
+    '<table class="stack"><caption>Valuation series, reconstructed from ledger history rather than from a file the fund sent you.</caption>' +
+      "<thead><tr><th>As at</th><th class='num'>NAV per unit</th><th class='num'>Distributions</th><th class='num'>Restated</th><th>Source</th></tr></thead>" +
+      "<tbody>" + rows + "</tbody></table>" +
+    '<p class="prov-note" style="margin-top:18px;max-width:66ch">The last secondary transferred units at a reference price of ' + money2(1.00) +
+      " per unit. That figure is consistent with the series above, so the reference price is clean.</p>" +
+  "</section>";
+}
+
+function prospectiveBlock() {
+  return "<section>" +
+    '<p class="section-label">Diligence view</p>' +
+    '<h1 class="focal">Enough to invest. Nothing that would move the fund.</h1>' +
+    '<p class="focal-lede">Meridian gives a prospective investor this view instead of building a data room. It is sanitised, so the same screen can be shown to anyone in a diligence process.</p>' +
+    '<div class="figures">' +
+      figure("Fund vintage", "Oct 2023", "2023-10-01", false) +
+      figure("Strategy", "Private credit, late stage venture", "2023-10-01", false) +
+      figure("Valuation cadence", "Quarterly", "2026-09-23", isStale()) +
+      figure("Last struck NAV", money2(1.00), activeValuation().date, isStale()) +
+      figure("Auditor", "Kwan and Associates", "2024-06-01", false) +
+      figure("Custody", "Qualified custodian, 3 of 3", "2026-06-30", false) +
+    "</div>" +
+    '<table class="stack" style="margin-top:24px"><caption>Withheld from a prospective investor.</caption>' +
+      "<thead><tr><th>Item</th><th>Reason</th></tr></thead><tbody>" +
+      "<tr><td data-label='Item'><span class='restricted'>Position level detail</span></td><td data-label='Reason'>Not disclosed to any investor before they are admitted.</td></tr>" +
+      "<tr><td data-label='Item'><span class='restricted'>Identity of LPs</span></td><td data-label='Reason'>Confidentiality obligation runs both ways.</td></tr>" +
+      "<tr><td data-label='Item'><span class='restricted'>Open material events</span></td><td data-label='Reason'>Available to LPs only, and only after admission.</td></tr>" +
+      "</tbody></table>" +
+  "</section>";
+}
+
+function emptyStateBlock() {
+  var r = currentReader();
+  return "<section>" +
+    '<p class="section-label">Your position</p>' +
+    '<h1 class="focal">Nothing left to disclose.</h1>' +
+    '<p class="focal-lede">You hold no units in this fund, so there is no position value, no exposure, and no valuation affecting you. The record of what you were told while you did hold units is kept below and is not deleted with the position.</p>' +
+    '<div class="figures">' +
+      figure("Units held", "0", "2026-04-01", false) +
+      figure("Commitment remaining", money(0), "2026-04-01", false) +
+      figure("Fully redeemed", fmtDate(r.redeemedOn.slice(0, 10)), "2026-04-01", false) +
+    "</div>" +
+    '<p class="prov-note" style="margin-top:20px;max-width:66ch">A redemption is only accepted when a valuation inside the disclosure window exists, so the 1 April redemption was priced against a 31 March valuation rather than a stale one. That is the same rule that refuses a redemption when a valuation has gone cold.</p>' +
+  "</section>";
+}
+
+function renderView() {
+  var r = currentReader();
+  var html = provenanceStrip();
+
+  if (r.kind === "exited") { html += emptyStateBlock(); html += disclosureLogBlock(); return html; }
+  if (r.kind === "lp") html += materialEventBlock();
+  if (r.kind === "lp") html += lpPositionBlock(r);
+  if (r.kind === "gp") html += gpBookBlock();
+  if (r.kind === "auditor") html += auditSeriesBlock();
+  if (r.kind === "gp" || r.kind === "auditor") html += disclosureLogBlock();
+  if (r.kind === "prospective") html += prospectiveBlock();
+  if (r.kind === "lp" || r.kind === "prospective") html += restrictedBlock();
+  if (r.kind === "lp") html += decisionBlock(r);
+
+  return html;
+}
+
+/* ---------------------------------------------------------------- *
+ * States: loading, error, empty
+ * ---------------------------------------------------------------- */
+
+function renderLoading() {
+  document.getElementById("main").innerHTML =
+    '<div class="state"><h2>Reading the ledger.</h2><p>Reconstructing your view as at ' +
+    esc(fmtDate(activeValuation().date)) + " for " + esc(currentReader().roleTag.toLowerCase()) + ".</p>" +
+    '<span class="loading-line" aria-hidden="true"></span></div>';
+}
+
+function renderError() {
+  document.getElementById("main").innerHTML =
+    '<div class="state" role="alert">' +
+    "<h2>Cannot reach the disclosure index.</h2>" +
+    "<p>The ledger is fine. The index that rebuilds your view from it is not responding, so what you would be seeing is a reconstruction, not the ledger itself. That distinction is the reason this error is shown rather than a partial view.</p>" +
+    '<button type="button" class="btn" id="retryBtn">Retry the read</button></div>';
+}
+
+function render() {
+  var main = document.getElementById("main");
+  if (state.indexError) { renderError(); wire(); return; }
+  renderLoading();
+  window.setTimeout(function () {
+    if (state.indexError) { renderError(); wire(); return; }
+    main.innerHTML = renderView();
+    wire();
+  }, 260);
+}
+
+function wire() {
+  var btn = document.getElementById("redeemBtn");
+  if (btn) {
+    btn.addEventListener("click", function () {
+      state.redemption = "pending";
+      render();
+      window.setTimeout(function () {
+        state.redemption = isStale() ? "blocked" : "done";
+        render();
+      }, 700);
+    });
+  }
+  var retry = document.getElementById("retryBtn");
+  if (retry) {
+    retry.addEventListener("click", function () {
+      state.indexError = false;
+      render();
+    });
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Controls
+ * ---------------------------------------------------------------- */
+
+function buildRoleSwitch() {
+  document.getElementById("roleSwitch").innerHTML = READERS.map(function (r) {
+    return '<button type="button" data-reader="' + esc(r.id) + '" aria-pressed="' +
+      (r.id === state.readerId) + '">' + esc(r.label) + "</button>";
+  }).join("");
+
+  Array.prototype.forEach.call(
+    document.querySelectorAll("#roleSwitch button"),
+    function (btn) {
+      btn.addEventListener("click", function () {
+        state.readerId = btn.getAttribute("data-reader");
+        state.redemption = null;
+        document.getElementById("roleTag").textContent = currentReader().roleTag;
+        Array.prototype.forEach.call(
+          document.querySelectorAll("#roleSwitch button"),
+          function (other) {
+            other.setAttribute("aria-pressed", String(other === btn));
+          }
+        );
+        render();
+      });
+    }
+  );
+}
+
+function setAsAt(index) {
+  state.asAtIndex = index;
+  state.redemption = null;
+  document.getElementById("asAt").value = String(index);
+  describeAsAt();
+}
+
+function describeAsAt() {
+  var v = activeValuation();
+  var age = valuationAgeDays();
+  document.getElementById("asAtLabel").textContent =
+    "Reconstructed as at " + fmtDate(v.date) + ", " + age + " days ago. " +
+    (age > 30 ? "Outside the 30 day window, so a redemption would be refused." : "Within the window.");
+}
+
+function buildAsAt() {
+  var slider = document.getElementById("asAt");
+  slider.min = "0";
+  slider.max = String(VALUATIONS.length - 1);
+  slider.value = String(state.asAtIndex);
+  document.getElementById("asAtMin").textContent = fmtDate(VALUATIONS[0].date);
+  document.getElementById("asAtMax").textContent = fmtDate(VALUATIONS[VALUATIONS.length - 1].date);
+
+  slider.addEventListener("input", function () {
+    setAsAt(parseInt(slider.value, 10));
+    render();
+  });
+
+  describeAsAt();
+}
+
+function buildStaleness() {
+  var buttons = document.querySelectorAll("#staleness button[data-role]");
+  Array.prototype.forEach.call(buttons, function (btn) {
+    btn.addEventListener("click", function () {
+      setAsAt(btn.getAttribute("data-role") === "off" ? STALE_INDEX : CURRENT_INDEX);
+      Array.prototype.forEach.call(buttons, function (other) {
+        other.setAttribute("aria-pressed", String(other === btn));
+      });
+      render();
+    });
+  });
+}
+
+function buildErrorToggle() {
+  var host = document.getElementById("indexControl");
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.textContent = "Take the index offline";
+  btn.setAttribute("aria-pressed", "false");
+  btn.addEventListener("click", function () {
+    state.indexError = !state.indexError;
+    btn.textContent = state.indexError ? "Bring the index back" : "Take the index offline";
+    btn.setAttribute("aria-pressed", String(state.indexError));
+    render();
+  });
+  host.appendChild(btn);
+}
+
+buildRoleSwitch();
+buildAsAt();
+buildStaleness();
+buildErrorToggle();
+render();
+</script>
+</body>
+</html>

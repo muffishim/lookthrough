@@ -1,0 +1,233 @@
+module Lookthrough where
+
+import DA.Time (subTime, wholeDays)
+
+data RightsTier = Standard | Enhanced
+  deriving (Eq, Show)
+
+template Fund
+  with
+    fundId : Text
+    name : Text
+    gp : Party
+    auditors : [Party]
+    stakeholders : [Party]
+    launched : Time
+    disclosureIntervalDays : Int
+    latestValuation : Time
+  where
+    signatory gp
+    observer auditors, stakeholders
+    ensure name /= "" && disclosureIntervalDays > 0
+
+    choice AdmitStakeholder : ContractId Fund
+      with
+        newStakeholder : Party
+        role : Text
+      controller gp
+      do
+        if role == "" then abort "A stakeholder must be admitted with a stated role" else return ()
+        if elem newStakeholder stakeholders
+          then abort "That party is already a stakeholder of this fund"
+          else return ()
+        newFund <- create this with stakeholders = stakeholders <> [newStakeholder]
+        archive self
+        return newFund
+
+    choice ShortenWindow : ContractId Fund
+      with
+        newWindowDays : Int
+        reason : Text
+      controller gp
+      do
+        if newWindowDays <= 0 then abort "The disclosure window must be a positive number of days" else return ()
+        if reason == "" then abort "Shortening the disclosure window requires a stated reason" else return ()
+        newFund <- create this with disclosureIntervalDays = newWindowDays
+        archive self
+        return newFund
+
+    choice StrikeValuation : ContractId Fund
+      with
+        asOf : Time
+        navPerUnit : Decimal
+        distributionsPerUnit : Decimal
+        feesAccruedPerUnit : Decimal
+        disclosedTo : [Party]
+        basis : Text
+      controller gp
+      do
+        if asOf <= latestValuation then
+          abort "A valuation cannot be struck for a date this fund has already passed. Restating history is what this product exists to make visible."
+          else return ()
+        if navPerUnit <= 0.0 then abort "A struck valuation must be positive" else return ()
+        if basis == "" then abort "A valuation must carry a stated basis" else return ()
+        newFund <- create this with latestValuation = asOf
+        create Valuation with
+          fund = self
+          fundName = name
+          gp = gp
+          auditors = auditors
+          asOf = asOf
+          navPerUnit = navPerUnit
+          distributionsPerUnit = distributionsPerUnit
+          feesAccruedPerUnit = feesAccruedPerUnit
+          disclosedTo = disclosedTo
+          basis = basis
+        archive self
+        return newFund
+
+    choice RequestRedemption : ContractId Redemption
+      with
+        requester : Party
+        units : Decimal
+        requestedAt : Time
+      controller requester
+      do
+        if units <= 0.0 then abort "A redemption must be for a positive number of units" else return ()
+        if wholeDays (subTime requestedAt latestValuation) > disclosureIntervalDays then
+          abort "The fund contract refuses this redemption. The last disclosed valuation is outside the disclosure window, so the investor would be redeeming into an unpriced book. This rule lives in the fund agreement and the ledger enforces it."
+          else return ()
+        create Redemption with
+          fund = self
+          fundName = name
+          gp = gp
+          auditors = auditors
+          requester = requester
+          units = units
+          requestedAt = requestedAt
+
+template Redemption
+  with
+    fund : ContractId Fund
+    fundName : Text
+    gp : Party
+    auditors : [Party]
+    requester : Party
+    units : Decimal
+    requestedAt : Time
+  where
+    signatory gp
+    observer auditors, requester
+
+template Valuation
+  with
+    fund : ContractId Fund
+    fundName : Text
+    gp : Party
+    auditors : [Party]
+    asOf : Time
+    navPerUnit : Decimal
+    distributionsPerUnit : Decimal
+    feesAccruedPerUnit : Decimal
+    disclosedTo : [Party]
+    basis : Text
+  where
+    signatory gp
+    observer auditors, disclosedTo
+    ensure navPerUnit > 0.0 && basis /= ""
+
+    choice RestateForward : ContractId Valuation
+      with
+        newAsOf : Time
+        newNav : Decimal
+        revisedBasis : Text
+      controller gp
+      do
+        if newAsOf <= asOf then
+          abort "A restatement must move forward in time. The figure that existed on a past date stays on the record for that date."
+          else return ()
+        if revisedBasis == "" then abort "A restatement must state what changed and why" else return ()
+        newVal <- create Valuation with
+          fund = fund
+          fundName = fundName
+          gp = gp
+          auditors = auditors
+          asOf = newAsOf
+          navPerUnit = newNav
+          distributionsPerUnit = distributionsPerUnit
+          feesAccruedPerUnit = feesAccruedPerUnit
+          disclosedTo = disclosedTo
+          basis = revisedBasis
+        archive self
+        return newVal
+
+template MaterialEvent
+  with
+    fund : ContractId Fund
+    fundName : Text
+    gp : Party
+    auditors : [Party]
+    eventId : Text
+    detectedAt : Time
+    exposurePerUnit : Decimal
+    impactLowPct : Decimal
+    impactHighPct : Decimal
+    detailRestricted : Bool
+    disclosedTo : [Party]
+  where
+    signatory gp
+    observer auditors, disclosedTo
+    ensure impactLowPct > 0.0 && impactHighPct >= impactLowPct
+
+    choice WidenDisclosure : ContractId MaterialEvent
+      with
+        additional : [Party]
+      controller gp
+      do
+        newEvent <- create this with disclosedTo = disclosedTo <> additional
+        archive self
+        return newEvent
+
+    choice NarrowDisclosure : ContractId MaterialEvent
+      with
+        remaining : [Party]
+        reason : Text
+      controller gp
+      do
+        if reason == "" then abort "Narrowing a disclosure requires a stated reason" else return ()
+        if length remaining > length disclosedTo
+          then abort "A disclosure can be narrowed but never widened silently"
+          else return ()
+        newEvent <- create this with disclosedTo = remaining
+        archive self
+        return newEvent
+
+template LpPosition
+  with
+    fund : ContractId Fund
+    fundName : Text
+    gp : Party
+    lp : Party
+    auditors : [Party]
+    rights : RightsTier
+    commitment : Decimal
+    units : Decimal
+    admittedOn : Time
+  where
+    signatory gp, lp
+    observer auditors
+    ensure commitment > 0.0 && units >= 0.0
+
+    choice UpgradeRights : ContractId LpPosition
+      with
+        newUnits : Decimal
+        effectiveFrom : Time
+        sideLetterReference : Text
+      controller gp
+      do
+        if newUnits <= 0.0 then abort "A position must hold a positive number of units" else return ()
+        if effectiveFrom <= admittedOn then abort "An upgrade must take effect after admission" else return ()
+        if sideLetterReference == "" then
+          abort "Enhanced rights must be traceable to a side letter, not granted informally"
+          else return ()
+        newPos <- create this with
+          rights = Enhanced
+          units = newUnits
+          admittedOn = effectiveFrom
+        archive self
+        return newPos
+
+    choice RecordRedemption : ()
+      controller lp
+      do
+        if units <= 0.0 then abort "There are no units left to redeem" else return ()
