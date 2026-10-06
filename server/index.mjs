@@ -103,7 +103,7 @@ return createServer(async (req, res) => {
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const port = Number(process.env.PORT ?? 4173);
-  const host = process.env.HOST ?? "127.0.0.1";
+  const host = process.env.HOST ?? (process.env.PORT ? "0.0.0.0" : "127.0.0.1");
   const workflow = createWorkflow({ file: resolve(root, ".runtime", "workflow.jsonl") });
   const canton = createCantonClient();
   createAppServer({ workflow, canton, bridge: createDevnetBridge({ canton }), host }).listen(port, host, () => console.log(

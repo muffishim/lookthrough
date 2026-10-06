@@ -1,4 +1,4 @@
-# Design QA — Decision Desk LP view
+# Design QA: Decision Desk LP view
 
 **Findings**
 

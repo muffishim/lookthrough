@@ -1,4 +1,4 @@
-# Lookthrough.systems — one-page brief
+# Lookthrough.systems: one-page brief
 
 ## Value / problem
 
