@@ -32,7 +32,7 @@ The local event log is written to `.runtime/workflow.jsonl`, which is ignored by
 
 The server contains a server-side JSON Ledger API adapter in `server/canton.mjs`. It supports an access token or an OIDC password grant, ledger-end health checks, active-contract queries, DAR upload and `submit-and-wait`. Credentials never go to the browser.
 
-The reproducible smoke path uploads `lookthrough.dar`, creates the Fund, admits two LP positions through GP/LP party actions, strikes a valuation, prepares a disclosure, has the reviewer publish it and records a partial redemption request:
+The reproducible smoke path uploads `lookthrough.dar`, creates the Fund, admits two LP positions through GP/LP party actions, strikes a valuation, prepares a disclosure and has the reviewer publish it:
 
 ```powershell
 $env:CANTON_ACCESS_TOKEN = "..."       # or set the OIDC variables below

@@ -75,7 +75,7 @@ async function main() {
   await run("accept-enhanced", parties.enhanced, [exerciseCommand(proposalTemplate, enhancedProposalCid, "AcceptPosition", {})], [parties.enhanced, parties.gp]);
   const enhancedPosition = await find(parties.enhanced, positionTemplate, event => createArgs(event).lp === parties.enhanced);
   const enhancedPositionCid = enhancedPosition.contractId || enhancedPosition.contract_id;
-  const asOf = new Date().toISOString();
+  const asOf = process.env.CANTON_VALUATION_ASOF || new Date().toISOString();
   await run("valuation", parties.gp, [exerciseCommand(fundTemplate, fundCid, "StrikeValuation", { asOf, navPerUnit: 1.25,
     distributionsPerUnit: 0, feesAccruedPerUnit: 0, basis: "Fictional administrator-approved NAV",
     positionIds: [standardPositionCid, enhancedPositionCid] })], [parties.gp, parties.standard, parties.enhanced]);
@@ -91,9 +91,6 @@ async function main() {
   await run("approve-disclosure", parties.reviewer, [exerciseCommand(draftTemplate, draft.contractId || draft.contract_id, "ApproveAndPublish", {})], [parties.reviewer, parties.standard, parties.enhanced, parties.auditor]);
   const receipts = await client.activeContracts({ party: parties.standard, includeCreatedEventBlob: true });
   proof.receiptQuery = { returned: Array.isArray(receipts) ? receipts.length : (receipts.activeContracts?.length ?? receipts.active_contracts?.length ?? 0), template: receiptTemplate };
-  await run("redemption-standard", parties.standard, [exerciseCommand(positionTemplate, updatedStandard.contractId || updatedStandard.contract_id, "RequestRedemption", { requestedUnits: 100000 })], [parties.standard, parties.gp, parties.auditor]);
-  const redemption = await find(parties.standard, redemptionTemplate, event => createArgs(event).lp === parties.standard && Number(createArgs(event).units) === 100000);
-  proof.redemptionContractId = redemption.contractId || redemption.contract_id;
   writeFileSync(resolve(root, "docs/evidence/devnet-proof.json"), JSON.stringify(proof, null, 2) + "\n");
   console.log("DevNet workflow complete. Proof written to docs/evidence/devnet-proof.json");
 }

@@ -1,0 +1,5 @@
+captured: 2026-10-06T15:51:24.041Z
+url: http://127.0.0.1:4173/
+ledger badge: Canton DevNet connected
+demo note: Fictional fund · Canton DevNet connected. Transactions are submitted through the configured participant. No real money is moved by this sample workflow.
+console or page errors: 0

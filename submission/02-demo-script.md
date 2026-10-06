@@ -1,5 +1,9 @@
 # Five-minute judge demo
 
+## Before you record
+
+Valuation dates must only move forward, so start from a clean state: stop the server and the sandbox, delete `.runtime\workflow.jsonl`, restart the Canton sandbox, run `npm run devnet:execute` with the five party IDs loaded, then `npm start`. Section 4 records a new valuation, which the fund contract refuses if it restates a date already struck.
+
 ## 1. Set the context — 30 seconds
 
 Open `http://127.0.0.1:4173/`. Explain that Azim Fund I is fictional and that the role picker is a judge-friendly identity switcher. In a live DevNet run the header reads **Canton DevNet connected**; without credentials it reads **Local simulation**.
@@ -17,6 +21,8 @@ Open `http://127.0.0.1:4173/`. Explain that Azim Fund I is fictional and that th
 Switch to **Tomas · Standard investor** and show the economic view. Switch to **Priya · Enhanced investor** and show the additional detail under the recorded side letter. The standard projection never includes Priya’s payload.
 
 ## 4. Prove operational logic — 75 seconds
+
+With the header reading **Canton DevNet connected**, each action below is submitted to the participant before the local audit log is written.
 
 1. Use the manager view to record a forward valuation.
 2. Make a partial redemption as Tomas.

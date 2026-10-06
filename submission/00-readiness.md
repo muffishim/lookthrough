@@ -11,8 +11,10 @@ Target track: **Investment Infrastructure: Funds, DAOs & Governance Tools**.
 - 15 Node workflow, authorization, privacy, persistence and Canton adapter tests (`npm test`).
 - 15 static checks (`npm run verify`).
 - Fresh UX audit screenshots and demo script from `docs/audit-2026-10-04.md`.
-- **The full five-party workflow executes end to end against a real Canton participant.** `npm run devnet:execute` uploads the DAR and submits fund creation, both position proposals and acceptances, a valuation, disclosure preparation, reviewer approval and a partial redemption, nine commands in total, at offsets 26 to 53. Reproducible against the local Canton 3.5.6 sandbox; ledger proof in `docs/evidence/devnet-proof.json`.
+- **The full five-party workflow executes end to end against a real Canton participant.** `npm run devnet:execute` uploads the DAR and submits fund creation, both position proposals and acceptances, a valuation, disclosure preparation and reviewer approval, eight commands in total, at offsets 26 to 47. Reproducible against the local Canton 3.5.6 sandbox; ledger proof in `docs/evidence/devnet-proof.json`.
 - DevNet adapter and reproducible smoke command in `scripts/devnet-smoke.mjs`.
+- **The running workspace is wired to that participant.** `/api/health` reports `mode: canton-devnet`, `ledgerConnected: true` and `devnetActionsReady: true`, and the app header reads *Canton DevNet connected*. Recording a valuation, publishing a disclosure and requesting a redemption each submit through `server/devnet-bridge.mjs` before the local audit log is updated, so a successful action is a ledger transaction first.
+- Reproducible demo captures: `scripts/capture-demo.mjs` writes seven frames to `screenshots/demo-2026-10-06/` with zero console or page errors.
 
 ## Still required before final platform submission
 

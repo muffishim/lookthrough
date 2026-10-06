@@ -1005,9 +1005,9 @@ function lpDisclosureBlock(r) {
   '</section>';
 }
 
-function materialEventBlock() {
+function materialEventBlock(r) {
   var e = MATERIAL_EVENT;
-  var share = e.heldAt * (e.fundSharePct / 100);
+  var share = e.heldAt * (r.unitsPct / 100);
   return "<section>" +
     '<p class="section-label">Material event</p>' +
     '<h1 class="focal">A confidential event could move your position by 80 to 140 percent.</h1>' +
@@ -1030,7 +1030,6 @@ function lpPositionBlock(r) {
   var distValue = r.units * v.distributionsPerUnit;
   var yearsHeld = 3;
   var fees = r.commitment * 0.015 * yearsHeld;
-  var eventShare = MATERIAL_EVENT.heldAt * (MATERIAL_EVENT.fundSharePct / 100);
   var stale = isStale();
   var iso = v.date;
 
@@ -1083,11 +1082,14 @@ function decisionBlock(r) {
   "</section>";
 }
 
-function restrictedBlock() {
+function restrictedBlock(r) {
+  var otherLps = (r && r.unitsPct != null)
+    ? "You hold " + r.unitsPct.toFixed(1) + " percent. Seeing the remaining holders and their sizes would let you time a redemption against them."
+    : "The identities and sizes of the limited partners already in this fund are not disclosed before you commit.";
   var rows = [
     ["Identity of the counterparty", "The fund is in a bilateral negotiation. Disclosure would expose Meridian's position in the transaction."],
     ["Agreed consideration", "The fund agreement permits disclosure of impact, not of price, where a transaction is unannounced."],
-    ["The other LPs in this fund", "You hold 0.4 percent. Knowing the other 10.6 percent would let you time a redemption against them."],
+    ["The other LPs in this fund", otherLps],
     ["Meridian's other funds", "Not related to your commitment and not disclosed to any LP in this fund."]
   ];
   return "<section>" +
@@ -1209,13 +1211,13 @@ function renderView() {
   var html = provenanceStrip();
 
   if (r.kind === "exited") { html += emptyStateBlock(); html += disclosureLogBlock(); return html; }
-  if (r.kind === "lp") html += materialEventBlock();
+  if (r.kind === "lp") html += materialEventBlock(r);
   if (r.kind === "lp") html += lpPositionBlock(r);
   if (r.kind === "gp") html += gpBookBlock();
   if (r.kind === "auditor") html += auditSeriesBlock();
   if (r.kind === "gp" || r.kind === "auditor") html += disclosureLogBlock();
   if (r.kind === "prospective") html += prospectiveBlock();
-  if (r.kind === "lp" || r.kind === "prospective") html += restrictedBlock();
+  if (r.kind === "lp" || r.kind === "prospective") html += restrictedBlock(r);
   if (r.kind === "lp") html += decisionBlock(r);
 
   return html;

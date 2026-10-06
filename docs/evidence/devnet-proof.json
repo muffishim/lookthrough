@@ -15,64 +15,57 @@
   "commands": [
     {
       "label": "fund",
-      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "1220e27ee3782a450dccb5961533208e7fb8e3f8b787876b4b412a63212f98d0510b",
-      "completionOffset": 29
+      "actAs": "lookthrough-gp::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "1220f9b0747a719a1460a367f6b2afed44acc8b2e4d4f231a218606c5a5cd48395d8",
+      "completionOffset": 26
     },
     {
       "label": "proposal-standard",
-      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "1220db22d13d3699b11f3d105ba38090d8d8b517b525629d4785415006d3a9ea6039",
-      "completionOffset": 32
+      "actAs": "lookthrough-gp::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "1220350ff3aa8db9c2d5803c0cbf9453ef40edba3f7b0142388f67e329951b7f0439",
+      "completionOffset": 29
     },
     {
       "label": "accept-standard",
-      "actAs": "lookthrough-lp-standard::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "1220b062e7b6ec0d5aa01271255af11b326f5d105f1cec048217818324eeeba6abea",
-      "completionOffset": 35
+      "actAs": "lookthrough-lp-standard::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "12200459414a4ae34529edc6bb6c1743e415d230e4d1ca3e26b5d422b9f08e114d37",
+      "completionOffset": 32
     },
     {
       "label": "proposal-enhanced",
-      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "122008288e35b77f39c9745d41b1b548f85d6decbf1c1bc38bb766a1195ac8e96cbe",
-      "completionOffset": 38
+      "actAs": "lookthrough-gp::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "1220ee481aa5b3ca389b282e42dac0ec09f48dd047b154d499a1f1111f2061f33c49",
+      "completionOffset": 35
     },
     {
       "label": "accept-enhanced",
-      "actAs": "lookthrough-lp-enhanced::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "12206e95998a40fb9e36342a54b23de56912739b92f274205f75a6585a59367fc0af",
-      "completionOffset": 41
+      "actAs": "lookthrough-lp-enhanced::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "12204f1ba06f14b32c0fd6c53964697915219babe45179c9a080a8ed5d1447ce18a8",
+      "completionOffset": 38
     },
     {
       "label": "valuation",
-      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "12209a442143fa09482ec48268ccd9f1049cf062ae8946a9843f5f100541d0095279",
-      "completionOffset": 44
+      "actAs": "lookthrough-gp::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "12209f58da4130ec8e9740415439190fac81e47876b539df6106454c87dbd143bd93",
+      "completionOffset": 41
     },
     {
       "label": "prepare-disclosure",
-      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "1220c3bae9fcde33c2b1cb8d8181225696c55e4954d4fdce9a85692fdc75e67a780a",
-      "completionOffset": 47
+      "actAs": "lookthrough-gp::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "12201d10588f1c28f966e01820afc040ee5e01d7822c565e584c980fc9b4f066fc11",
+      "completionOffset": 44
     },
     {
       "label": "approve-disclosure",
-      "actAs": "lookthrough-reviewer::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "1220a47567fa470b6bb69587bd35eb18f11d8e7487a4f0224bcca000a32221e238ee",
-      "completionOffset": 50
-    },
-    {
-      "label": "redemption-standard",
-      "actAs": "lookthrough-lp-standard::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
-      "updateId": "1220114eb055318fc9ccbc99cd605d9c493636d90fb96f04daca1be0a34634c03cc6",
-      "completionOffset": 53
+      "actAs": "lookthrough-reviewer::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
+      "updateId": "1220d189cdafb192ddf3bca8b92109302e171bdad42f95dd7ef664d1f6bcaba31479",
+      "completionOffset": 47
     }
   ],
-  "fundContractId": "00e6f26b07b3cff6c4d6569c8d23d99a80fdc5ce4ff6656d84e6385ac3f562af63ca121220ae03bd6f94ac49bb2dab88214007f633c64c6ed676690f144f00aab7667d6383",
-  "fundContractIdAfterValuation": "0079e544ea7791e5bbc231385b01f92f30d96f5e94600aae187bf257be718b39a1ca121220532a8bf930f459ede40562aee39d3eaa7a3ad5681c5fc1d53771195bec2be37f",
+  "fundContractId": "00e8f3ca1f74c88b9c5ba26818b58647072ed3100790b248c60d2bf8f341536c9dca121220896367623abc0326bb099b278a039d80e7e731df77db8210b1ff9590f5f9601b",
+  "fundContractIdAfterValuation": "0073b8001328d935cad61f9fd5fd1826e9db198cbed28dfdf34e5f8bc23f1a7c19ca121220f8af334904c767fe1a1ae39595e1d2b14991ff089bc6682bb5bc5982a7a42ef6",
   "receiptQuery": {
     "returned": 3,
     "template": "#lookthrough:Lookthrough:DisclosureReceipt"
-  },
-  "redemptionContractId": "00018108290dc35d7e8b43ca3ca6bc7dc652bf7a7c53595bc0488578b91a5850e4ca12122050b70b4c36aa88520b9f00c8ff17dd475b8f4f1377e9822aadf6401e622cf490"
+  }
 }

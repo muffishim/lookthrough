@@ -105,7 +105,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const port = Number(process.env.PORT ?? 4173);
   const host = process.env.HOST ?? "127.0.0.1";
   const workflow = createWorkflow({ file: resolve(root, ".runtime", "workflow.jsonl") });
-  createAppServer({ workflow, host }).listen(port, host, () => console.log(
+  const canton = createCantonClient();
+  createAppServer({ workflow, canton, bridge: createDevnetBridge({ canton }), host }).listen(port, host, () => console.log(
     "Lookthrough local workflow demo: http://" + host + ":" + port +
-    "\nFictional data. Canton is not connected. Choose a demonstration identity to begin."));
+    "\nFictional data. Choose a demonstration identity to begin." +
+    (canton.configured ? "\nCanton ledger: " + canton.config.baseUrl : "\nCanton is not connected.")));
 }

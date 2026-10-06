@@ -140,12 +140,12 @@ export function createCommand(template, createArguments) { return { CreateComman
 export function exerciseCommand(template, contractId, choice, choiceArgument = {}) {
   return { ExerciseCommand: { templateId: template, contractId, choice, choiceArgument: damlJson(choiceArgument) } };
 }
-function createdEvent(entry) {
+export function createdEvent(entry) {
   return entry?.contractEntry?.JsActiveContract?.createdEvent
     || entry?.contractEntry?.createdEvent || entry?.contractEntry?.created_event
     || entry?.activeContract?.createdEvent || entry?.createdEvent || entry;
 }
-function sameTemplate(actual, expected) {
+export function sameTemplate(actual, expected) {
   if (!expected) return true;
   if (!actual) return false;
   const core = id => String(id).split(":").slice(-2).join(":");

@@ -1,11 +1,10 @@
-import { CantonError, exerciseCommand, templateId } from "./canton.mjs";
+import { CantonError, exerciseCommand, templateId, createdEvent, sameTemplate } from "./canton.mjs";
 
 const templates = {
   fund: templateId("Lookthrough", "Fund"), position: templateId("Lookthrough", "LpPosition"),
   draft: templateId("Lookthrough", "DisclosureDraft")
 };
 const fail = message => { throw new CantonError(message, 503); };
-const createdEvent = entry => entry?.createdEvent || entry?.created_event || entry?.created || entry?.contractEntry?.createdEvent || entry?.contractEntry?.created_event || entry?.activeContract?.createdEvent || entry?.activeContract?.created_event || entry;
 const cid = event => event?.contractId || event?.contract_id;
 const args = event => event?.createArgument || event?.createArguments || event?.create_argument || event?.create_arguments || {};
 
@@ -17,7 +16,7 @@ export function createDevnetBridge({ canton }) {
     const result = await canton.activeContracts({ party, includeCreatedEventBlob: true });
     const list = Array.isArray(result) ? result : result.activeContracts || result.active_contracts || result;
     const matches = (Array.isArray(list) ? list : []).map(createdEvent).filter(event =>
-      (!template || (event.templateId || event.template_id) === template) && predicate(args(event), event));
+      (!template || sameTemplate(event.templateId || event.template_id, template)) && predicate(args(event), event));
     if (!matches.length) throw new CantonError(`No active ${template} contract matched the requested workflow.`, 409);
     return matches.at(-1);
   }
@@ -39,8 +38,9 @@ export function createDevnetBridge({ canton }) {
     const fund = await find(c.gpParty, templates.fund, a => a.fundId === c.fundId);
     const standard = await find(c.gpParty, templates.position, a => a.lp === c.standardLpParty);
     const enhanced = await find(c.gpParty, templates.position, a => a.lp === c.enhancedLpParty);
+    const asOf = input.asOf.includes("T") ? input.asOf : input.asOf + "T00:00:00Z";
     return canton.submit({ actAs: [c.gpParty], readAs: [c.gpParty, c.standardLpParty, c.enhancedLpParty, c.auditorParty], commands: [exerciseCommand(templates.fund, cid(fund), "StrikeValuation", {
-      asOf: input.asOf + "T00:00:00Z", navPerUnit: Number(input.navCents) / 100, distributionsPerUnit: 0,
+      asOf, navPerUnit: Number(input.navCents) / 100, distributionsPerUnit: 0,
       feesAccruedPerUnit: 0, basis: input.basis, positionIds: [cid(standard), cid(enhanced)]
     })] });
   }
