@@ -1,0 +1,219 @@
+module WorkflowTests where
+
+import Daml.Script
+import DA.List (head, tail)
+import DA.Date (date, Month(..))
+import DA.Time (time, addRelTime, days, seconds)
+import Lookthrough
+
+data Fixture = Fixture with
+    gp : Party
+    reviewer : Party
+    auditor : Party
+    standard : Party
+    enhanced : Party
+    outsider : Party
+    fund : ContractId Fund
+    standardPosition : ContractId LpPosition
+    enhancedPosition : ContractId LpPosition
+
+fixture : Script Fixture
+fixture = script do
+  setTime (time (date 2026 Oct 4) 9 0 0)
+  gp <- allocateParty "GP"
+  reviewer <- allocateParty "FundAdministrator"
+  auditor <- allocateParty "Auditor"
+  standard <- allocateParty "StandardLP"
+  enhanced <- allocateParty "EnhancedLP"
+  outsider <- allocateParty "Outsider"
+  fund <- submit gp do
+    createCmd Fund with
+      fundId = "AZIM-01"; name = "Azim Fund I"; gp; reviewer
+      auditors = [auditor]; disclosureIntervalDays = 30; latestValuation = None
+  standardProposal <- submit gp do
+    exerciseCmd fund ProposePosition with
+      lp = standard; rights = Standard; policyReference = "LPA-8.2"
+      commitment = 250000.0; units = 250000.0
+  standardPosition <- submit standard do
+    exerciseCmd standardProposal AcceptPosition
+  enhancedProposal <- submit gp do
+    exerciseCmd fund ProposePosition with
+      lp = enhanced; rights = Enhanced; policyReference = "SIDE-LETTER-004"
+      commitment = 4000000.0; units = 4000000.0
+  enhancedPosition <- submit enhanced do
+    exerciseCmd enhancedProposal AcceptPosition
+  pure Fixture with ..
+
+strikeFresh : Fixture -> Script Fixture
+strikeFresh f = script do
+  now <- getTime
+  result <- submit f.gp do
+    exerciseCmd f.fund StrikeValuation with
+      asOf = now; navPerUnit = 1.0; distributionsPerUnit = 0.42
+      feesAccruedPerUnit = 0.01; basis = "Administrator approved NAV"
+      positionIds = [f.standardPosition, f.enhancedPosition]
+  pure f with fund = result.fund
+              standardPosition = head result.positions
+              enhancedPosition = head (tail result.positions)
+
+prepare : Fixture -> Script (ContractId DisclosureDraft)
+prepare f = submit f.gp do
+  exerciseCmd f.fund PrepareDisclosure with
+    eventId = "EVENT-001"
+    standardText = "Economic impact disclosed; investment identity withheld."
+    enhancedText = "Northwind Robotics; position value 41.2m."
+    positionIds = [f.standardPosition, f.enhancedPosition]
+
+testRecipientPrivacy : Script ()
+testRecipientPrivacy = script do
+  f <- fixture
+  draft <- prepare f
+  receipts <- submit f.reviewer do exerciseCmd draft ApproveAndPublish
+  assert (length receipts == 2)
+  let standardReceipt = head receipts
+      enhancedReceipt = head (tail receipts)
+  Some standardView <- queryContractId f.standard standardReceipt
+  Some enhancedView <- queryContractId f.enhanced enhancedReceipt
+  assert (standardView.payload == "Economic impact disclosed; investment identity withheld.")
+  assert (enhancedView.payload == "Northwind Robotics; position value 41.2m.")
+  assert (standardView.policyReference == "LPA-8.2")
+  assert (enhancedView.policyReference == "SIDE-LETTER-004")
+  hidden <- queryContractId f.standard enhancedReceipt
+  assert (hidden == None)
+  outsiderView <- queryContractId f.outsider standardReceipt
+  assert (outsiderView == None)
+  auditorView <- query @DisclosureReceipt f.auditor
+  assert (length auditorView == 2)
+  audit <- query @PublicationAudit f.auditor
+  assert (length audit == 1)
+  lpAudit <- query @PublicationAudit f.standard
+  assert (length lpAudit == 0)
+  otherPosition <- queryContractId f.standard f.enhancedPosition
+  assert (otherPosition == None)
+
+testReviewerRequired : Script ()
+testReviewerRequired = script do
+  f <- fixture
+  draft <- prepare f
+  submitMustFail f.gp do exerciseCmd draft ApproveAndPublish
+  submitMustFail f.standard do exerciseCmd draft ApproveAndPublish
+  unpublished <- query @DisclosureReceipt f.standard
+  assert (length unpublished == 0)
+  _ <- submit f.reviewer do exerciseCmd draft ApproveAndPublish
+  pure ()
+
+testPartialRedemptionAndFundSurvival : Script ()
+testPartialRedemptionAndFundSurvival = script do
+  f <- fixture >>= strikeFresh
+  result <- submit f.standard do
+    exerciseCmd f.standardPosition RequestRedemption with requestedUnits = 100000.0
+  Some remaining <- queryContractId f.standard result.position
+  assert (remaining.units == 150000.0)
+  Some request <- queryContractId f.standard result.request
+  assert (request.units == 100000.0 && request.navPerUnit == 1.0)
+  fund <- queryContractId f.gp f.fund
+  assert (fund /= None)
+  submitMustFail f.standard do
+    exerciseCmd result.position RequestRedemption with requestedUnits = 150001.0
+  second <- submit f.standard do
+    exerciseCmd result.position RequestRedemption with requestedUnits = 150000.0
+  Some exhausted <- queryContractId f.standard second.position
+  assert (exhausted.units == 0.0)
+  submitMustFail f.standard do
+    exerciseCmd second.position RequestRedemption with requestedUnits = 1.0
+
+testNoValuationNoRedemption : Script ()
+testNoValuationNoRedemption = script do
+  f <- fixture
+  submitMustFail f.standard do
+    exerciseCmd f.standardPosition RequestRedemption with requestedUnits = 1.0
+  Some unchanged <- queryContractId f.standard f.standardPosition
+  assert (unchanged.units == 250000.0)
+
+testStaleRedemptionRejectedAtomically : Script ()
+testStaleRedemptionRejectedAtomically = script do
+  f <- fixture >>= strikeFresh
+  passTime (days 31)
+  submitMustFail f.standard do
+    exerciseCmd f.standardPosition RequestRedemption with requestedUnits = 100000.0
+  Some unchanged <- queryContractId f.standard f.standardPosition
+  assert (unchanged.units == 250000.0)
+  requests <- query @Redemption f.auditor
+  assert (length requests == 0)
+
+testExactFreshnessBoundary : Script ()
+testExactFreshnessBoundary = script do
+  f <- fixture >>= strikeFresh
+  passTime (days 30)
+  result <- submit f.standard do
+    exerciseCmd f.standardPosition RequestRedemption with requestedUnits = 1.0
+  passTime (seconds 1)
+  submitMustFail f.standard do
+    exerciseCmd result.position RequestRedemption with requestedUnits = 1.0
+
+testFutureAndRestatedValuationsRejected : Script ()
+testFutureAndRestatedValuationsRejected = script do
+  f <- fixture >>= strikeFresh
+  now <- getTime
+  submitMustFail f.gp do
+    exerciseCmd f.fund StrikeValuation with
+      asOf = addRelTime now (days 1); navPerUnit = 1.2
+      distributionsPerUnit = 0.42; feesAccruedPerUnit = 0.01; basis = "Future"
+      positionIds = [f.standardPosition]
+  submitMustFail f.gp do
+    exerciseCmd f.fund StrikeValuation with
+      asOf = now; navPerUnit = 1.2
+      distributionsPerUnit = 0.42; feesAccruedPerUnit = 0.01; basis = "Rewritten past"
+      positionIds = [f.standardPosition]
+  passTime (days 1)
+  _ <- strikeFresh f
+  originals <- query @Valuation f.standard
+  assert (length originals == 2)
+
+testWrongActorAndInvalidUnits : Script ()
+testWrongActorAndInvalidUnits = script do
+  f <- fixture >>= strikeFresh
+  submitMustFail f.enhanced do
+    exerciseCmd f.standardPosition RequestRedemption with requestedUnits = 1.0
+  submitMustFail f.standard do
+    exerciseCmd f.standardPosition RequestRedemption with requestedUnits = 0.0
+  submitMustFail f.standard do
+    exerciseCmd f.standardPosition RequestRedemption with requestedUnits = -1.0
+  submitMustFail f.standard do
+    exerciseCmd f.standardPosition UpgradeRights with sideLetterReference = "Forged"
+
+testRecordedRightsUpgrade : Script ()
+testRecordedRightsUpgrade = script do
+  f <- fixture
+  submitMustFail f.gp do
+    exerciseCmd f.standardPosition UpgradeRights with sideLetterReference = ""
+  upgraded <- submit f.gp do
+    exerciseCmd f.standardPosition UpgradeRights with sideLetterReference = "SIDE-LETTER-009"
+  Some position <- queryContractId f.standard upgraded
+  assert (position.rights == Enhanced && position.units == 250000.0)
+  draft <- prepare (f with standardPosition = upgraded)
+  receipts <- submit f.reviewer do exerciseCmd draft ApproveAndPublish
+  Some receipt <- queryContractId f.standard (head receipts)
+  assert (receipt.policyReference == "SIDE-LETTER-009")
+  assert (receipt.payload == "Northwind Robotics; position value 41.2m.")
+
+testProposalConsentAndWithdrawal : Script ()
+testProposalConsentAndWithdrawal = script do
+  f <- fixture
+  proposal <- submit f.gp do
+    exerciseCmd f.fund ProposePosition with
+      lp = f.outsider; rights = Standard; policyReference = "LPA-8.2"
+      commitment = 10.0; units = 10.0
+  submitMustFail f.standard do exerciseCmd proposal AcceptPosition
+  submit f.gp do exerciseCmd proposal WithdrawPosition
+  submitMustFail f.outsider do exerciseCmd proposal AcceptPosition
+
+testPendingDraftSurvivesPositionReplacement : Script ()
+testPendingDraftSurvivesPositionReplacement = script do
+  f <- fixture
+  draft <- prepare f
+  updated <- strikeFresh f
+  _ <- submit updated.standard do
+    exerciseCmd updated.standardPosition RequestRedemption with requestedUnits = 1.0
+  receipts <- submit f.reviewer do exerciseCmd draft ApproveAndPublish
+  assert (length receipts == 2)

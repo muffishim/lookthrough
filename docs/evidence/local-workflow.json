@@ -1,0 +1,289 @@
+{
+  "generatedBy": "scripts/demo-evidence.mjs",
+  "description": "Scripted local simulation. Not a Canton ledger trace or user validation.",
+  "observations": [
+    {
+      "step": "Stale request",
+      "status": 422,
+      "message": "Redemption refused: the disclosed valuation is outside the 30 day window."
+    },
+    {
+      "step": "GP self approval",
+      "status": 403,
+      "message": "Your role is not authorized for this action."
+    }
+  ],
+  "standardInvestor": {
+    "mode": "local-simulation",
+    "now": "2026-10-04T09:00:00.000Z",
+    "fund": {
+      "id": "AZIM-01",
+      "name": "Azim Fund I",
+      "windowDays": 30
+    },
+    "actor": "lp-standard",
+    "ledgerConnected": false,
+    "position": {
+      "name": "Tomas",
+      "rights": "Standard",
+      "policyReference": "LPA §8.2",
+      "units": "150000",
+      "commitmentCents": "25000000",
+      "valuationAsOf": "2026-10-04T00:00:00Z",
+      "navCents": 125,
+      "redemptionEligible": true,
+      "navValueCents": "18750000"
+    },
+    "receipts": [
+      {
+        "id": "b7fc0d9c-5eb4-4af8-9725-9b4ad3c6f332",
+        "eventId": "EVENT-001",
+        "draftId": "ef500957-ea9b-4012-96b2-6857cc7e396c",
+        "lp": "lp-standard",
+        "rights": "Standard",
+        "policyReference": "LPA §8.2",
+        "payload": "Economic impact disclosed. Portfolio identity withheld.",
+        "payloadHash": "73f8c419a9c327db284a12e7b85dcad94570aef74eacf57fa72f25d475cb132d",
+        "publishedAt": "2026-10-04T09:00:00.000Z",
+        "preparedBy": "gp",
+        "approvedBy": "reviewer"
+      }
+    ],
+    "redemptions": [
+      {
+        "id": "846ef425-c4e0-46fa-8d87-00a0e21b61d2",
+        "lp": "lp-standard",
+        "units": "100000",
+        "navCents": 125,
+        "indicativeValueCents": "12500000",
+        "valuationAsOf": "2026-10-04T00:00:00Z",
+        "requestedAt": "2026-10-04T09:00:00.000Z",
+        "status": "reserved",
+        "settlement": "not-performed"
+      }
+    ],
+    "valuations": [
+      {
+        "id": "sample-opening-valuation",
+        "asOf": "2026-06-23T00:00:00Z",
+        "navCents": 100,
+        "basis": "Fictional opening valuation",
+        "recordedAt": "2026-10-04T09:00:00.000Z"
+      },
+      {
+        "id": "7ebb35b3-733e-4135-92f8-8563bd98d56f",
+        "asOf": "2026-10-04T00:00:00Z",
+        "navCents": 125,
+        "basis": "Fictional administrator approved NAV",
+        "recordedAt": "2026-10-04T09:00:00.000Z"
+      }
+    ]
+  },
+  "enhancedInvestor": {
+    "mode": "local-simulation",
+    "now": "2026-10-04T09:00:00.000Z",
+    "fund": {
+      "id": "AZIM-01",
+      "name": "Azim Fund I",
+      "windowDays": 30
+    },
+    "actor": "lp-enhanced",
+    "ledgerConnected": false,
+    "position": {
+      "name": "Priya",
+      "rights": "Enhanced",
+      "policyReference": "Side letter SL-004",
+      "units": "4000000",
+      "commitmentCents": "400000000",
+      "valuationAsOf": "2026-10-04T00:00:00Z",
+      "navCents": 125,
+      "redemptionEligible": true,
+      "navValueCents": "500000000"
+    },
+    "receipts": [
+      {
+        "id": "0d5fab41-ce80-401a-b7a6-60942063b082",
+        "eventId": "EVENT-001",
+        "draftId": "ef500957-ea9b-4012-96b2-6857cc7e396c",
+        "lp": "lp-enhanced",
+        "rights": "Enhanced",
+        "policyReference": "Side letter SL-004",
+        "payload": "Fictional Northwind Robotics position revalued to $41.2m.",
+        "payloadHash": "ed09df842f7d413723b47033e41d4968212a87659d31289785bf2deb67efcd6b",
+        "publishedAt": "2026-10-04T09:00:00.000Z",
+        "preparedBy": "gp",
+        "approvedBy": "reviewer"
+      }
+    ],
+    "redemptions": [],
+    "valuations": [
+      {
+        "id": "sample-opening-valuation",
+        "asOf": "2026-06-23T00:00:00Z",
+        "navCents": 100,
+        "basis": "Fictional opening valuation",
+        "recordedAt": "2026-10-04T09:00:00.000Z"
+      },
+      {
+        "id": "7ebb35b3-733e-4135-92f8-8563bd98d56f",
+        "asOf": "2026-10-04T00:00:00Z",
+        "navCents": 125,
+        "basis": "Fictional administrator approved NAV",
+        "recordedAt": "2026-10-04T09:00:00.000Z"
+      }
+    ]
+  },
+  "audit": {
+    "mode": "local-simulation",
+    "ledgerConnected": false,
+    "caveat": "A SHA-256 linked local log detects accidental edits. The host can rewrite it; this is not Canton consensus or independent notarization.",
+    "exportedAt": "2026-10-04T09:00:00.000Z",
+    "records": [
+      {
+        "sequence": 1,
+        "id": "3011efb4-8e0e-4afc-813f-9f78911af86d",
+        "type": "FundInitialized",
+        "actor": "setup",
+        "at": "2026-10-04T09:00:00.000Z",
+        "payload": {
+          "positions": {
+            "lp-standard": {
+              "name": "Tomas",
+              "rights": "Standard",
+              "policyReference": "LPA §8.2",
+              "units": "250000",
+              "commitmentCents": "25000000",
+              "valuationAsOf": "2026-06-23T00:00:00Z",
+              "navCents": 100
+            },
+            "lp-enhanced": {
+              "name": "Priya",
+              "rights": "Enhanced",
+              "policyReference": "Side letter SL-004",
+              "units": "4000000",
+              "commitmentCents": "400000000",
+              "valuationAsOf": "2026-06-23T00:00:00Z",
+              "navCents": 100
+            }
+          },
+          "valuations": [
+            {
+              "id": "sample-opening-valuation",
+              "asOf": "2026-06-23T00:00:00Z",
+              "navCents": 100,
+              "basis": "Fictional opening valuation",
+              "recordedAt": "2026-10-04T09:00:00.000Z"
+            }
+          ]
+        },
+        "previousHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "hash": "ce6e28f74f685d84452898146e60eafd0d13cafedf4183d5aea0ff0a96cb57a5"
+      },
+      {
+        "sequence": 2,
+        "id": "8417d435-04bb-4460-a99a-8f043dca57d6",
+        "type": "DisclosurePrepared",
+        "actor": "gp",
+        "at": "2026-10-04T09:00:00.000Z",
+        "payload": {
+          "id": "ef500957-ea9b-4012-96b2-6857cc7e396c",
+          "eventId": "EVENT-001",
+          "standardText": "Economic impact disclosed. Portfolio identity withheld.",
+          "enhancedText": "Fictional Northwind Robotics position revalued to $41.2m.",
+          "preparedAt": "2026-10-04T09:00:00.000Z",
+          "preparedBy": "gp",
+          "recipients": [
+            {
+              "lp": "lp-standard",
+              "rights": "Standard",
+              "policyReference": "LPA §8.2"
+            },
+            {
+              "lp": "lp-enhanced",
+              "rights": "Enhanced",
+              "policyReference": "Side letter SL-004"
+            }
+          ]
+        },
+        "previousHash": "ce6e28f74f685d84452898146e60eafd0d13cafedf4183d5aea0ff0a96cb57a5",
+        "hash": "957ebee774257e59a215294cc11bd0158570b975f1667a08fb122879f46f47cd"
+      },
+      {
+        "sequence": 3,
+        "id": "9ee98349-d703-4a7c-ad12-1bdce2182851",
+        "type": "DisclosurePublished",
+        "actor": "reviewer",
+        "at": "2026-10-04T09:00:00.000Z",
+        "payload": {
+          "draftId": "ef500957-ea9b-4012-96b2-6857cc7e396c",
+          "receipts": [
+            {
+              "id": "b7fc0d9c-5eb4-4af8-9725-9b4ad3c6f332",
+              "eventId": "EVENT-001",
+              "draftId": "ef500957-ea9b-4012-96b2-6857cc7e396c",
+              "lp": "lp-standard",
+              "rights": "Standard",
+              "policyReference": "LPA §8.2",
+              "payload": "Economic impact disclosed. Portfolio identity withheld.",
+              "payloadHash": "73f8c419a9c327db284a12e7b85dcad94570aef74eacf57fa72f25d475cb132d",
+              "publishedAt": "2026-10-04T09:00:00.000Z",
+              "preparedBy": "gp",
+              "approvedBy": "reviewer"
+            },
+            {
+              "id": "0d5fab41-ce80-401a-b7a6-60942063b082",
+              "eventId": "EVENT-001",
+              "draftId": "ef500957-ea9b-4012-96b2-6857cc7e396c",
+              "lp": "lp-enhanced",
+              "rights": "Enhanced",
+              "policyReference": "Side letter SL-004",
+              "payload": "Fictional Northwind Robotics position revalued to $41.2m.",
+              "payloadHash": "ed09df842f7d413723b47033e41d4968212a87659d31289785bf2deb67efcd6b",
+              "publishedAt": "2026-10-04T09:00:00.000Z",
+              "preparedBy": "gp",
+              "approvedBy": "reviewer"
+            }
+          ]
+        },
+        "previousHash": "957ebee774257e59a215294cc11bd0158570b975f1667a08fb122879f46f47cd",
+        "hash": "6863c650e9476151c6fe42897231f8e2e5a573fbb51476a0948f75e2599e10f9"
+      },
+      {
+        "sequence": 4,
+        "id": "e96adade-4056-43e5-ac5c-00df21a7d41f",
+        "type": "ValuationStruck",
+        "actor": "gp",
+        "at": "2026-10-04T09:00:00.000Z",
+        "payload": {
+          "id": "7ebb35b3-733e-4135-92f8-8563bd98d56f",
+          "asOf": "2026-10-04T00:00:00Z",
+          "navCents": 125,
+          "basis": "Fictional administrator approved NAV",
+          "recordedAt": "2026-10-04T09:00:00.000Z"
+        },
+        "previousHash": "6863c650e9476151c6fe42897231f8e2e5a573fbb51476a0948f75e2599e10f9",
+        "hash": "9f5209403ad1e4246d7b2d78df41019c7eecf18ff59efd791bc043d788e68425"
+      },
+      {
+        "sequence": 5,
+        "id": "926724be-495e-4ad8-9cd0-58e43dcf1af6",
+        "type": "RedemptionRequested",
+        "actor": "lp-standard",
+        "at": "2026-10-04T09:00:00.000Z",
+        "payload": {
+          "id": "846ef425-c4e0-46fa-8d87-00a0e21b61d2",
+          "lp": "lp-standard",
+          "units": "100000",
+          "navCents": 125,
+          "indicativeValueCents": "12500000",
+          "valuationAsOf": "2026-10-04T00:00:00Z",
+          "requestedAt": "2026-10-04T09:00:00.000Z",
+          "status": "reserved",
+          "settlement": "not-performed"
+        },
+        "previousHash": "9f5209403ad1e4246d7b2d78df41019c7eecf18ff59efd791bc043d788e68425",
+        "hash": "707734f56a27295ad3e2b585d8e2f8394576ced999fe0df1cca184b65d87be2a"
+      }
+    ]
+  }
+}

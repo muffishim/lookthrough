@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Lookthrough: a permissioned fund disclosure and capital coordination workflow. Fictional local demonstration.">
+  <title>Lookthrough · Fund workspace</title>
+  <link rel="stylesheet" href="/app.css">
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to workspace</a>
+  <div class="workspace">
+    <aside class="sidebar" aria-label="Fund workspace">
+      <a class="brand" href="/" aria-label="Lookthrough workspace"><span class="brandmark">L</span> lookthrough<span class="brand-dot">.</span></a>
+      <div class="workspace-name"><span class="fund-icon" aria-hidden="true">A</span><div><strong>Azim Fund I</strong><small>Private fund workspace</small></div></div>
+      <p class="sidebar-label">WORKSPACE</p>
+      <nav aria-label="Workspace pages">
+        <button data-page="overview" class="nav-item active" aria-current="page"><span aria-hidden="true">01</span> Overview</button>
+        <button data-page="disclosures" class="nav-item"><span aria-hidden="true">02</span> Disclosures</button>
+        <button data-page="activity" class="nav-item"><span aria-hidden="true">03</span> Activity &amp; evidence</button>
+      </nav>
+      <div class="identity-panel">
+        <label for="identity">View as</label>
+        <select id="identity">
+          <option value="gp">Meridian · Fund manager</option>
+          <option value="reviewer">Elena · Fund administrator</option>
+          <option value="lp-standard">Tomas · Standard investor</option>
+          <option value="lp-enhanced">Priya · Enhanced investor</option>
+          <option value="auditor">Kwan · Auditor</option>
+        </select>
+        <p>Demo identities. This selector lets judges explore each role; it is not a login.</p>
+      </div>
+      <a class="reference-link" href="/web/prototype.html">Earlier design reference ↗</a>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar"><span>Azim Fund I <span class="breadcrumb">/</span> <span id="page-name">Overview</span></span><span class="mode"><span class="status-dot" id="ledger-dot" aria-hidden="true"></span> <span id="ledger-mode">Checking ledger…</span></span></header>
+      <div class="demo-note" id="demo-note"><strong>Fictional fund.</strong> The workspace will identify whether it is using the local simulation or a configured Canton DevNet participant.</div>
+      <main id="content" tabindex="-1">
+        <div id="notice" aria-live="polite"></div>
+        <div id="view" aria-busy="true"><p class="loading">Opening your workspace…</p></div>
+      </main>
+      <footer>Lookthrough.systems <span>Permissioned information, accountable decisions.</span></footer>
+    </div>
+  </div>
+</body>
+</html>

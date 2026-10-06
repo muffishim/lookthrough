@@ -42,7 +42,7 @@
     outline-offset: 2px;
   }
 
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 96px; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 40px 88px; }
 
   /* Masthead ------------------------------------------------------- */
 
@@ -82,17 +82,17 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
-    padding: 10px 0;
+    gap: 12px;
+    padding: 12px 0 14px;
     border-bottom: 1px solid var(--rule);
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--muted);
   }
 
   .sampledata b {
     font-family: var(--mono);
     font-weight: 500;
-    font-size: 11.5px;
+    font-size: 10.5px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--stale);
@@ -245,6 +245,18 @@
 
   .controls { padding: 22px 0 0; }
 
+  .prototype-controls { margin-top: 120px; border-top: 1px solid var(--rule); padding-top: 12px; }
+  .prototype-controls > summary {
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    list-style-position: inside;
+    text-transform: uppercase;
+  }
+  .prototype-controls[open] .controls { padding-top: 18px; }
+
   .controls-fieldset {
     border: 0;
     padding: 0;
@@ -334,6 +346,172 @@
 
   .decision p { margin: 0; max-width: 52ch; }
 
+  /* LP decision-first view ----------------------------------------- */
+
+  .lp-decision-status {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 22px;
+    row-gap: 8px;
+  }
+
+  .lp-decision-icon {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: center;
+    display: block;
+    width: 72px;
+    height: 72px;
+  }
+
+  .lp-decision-title { grid-column: 2; grid-row: 1; }
+  .lp-decision-note { grid-column: 2; grid-row: 2; }
+
+  .lp-decision {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(310px, 0.9fr);
+    align-items: center;
+    gap: 36px;
+    padding: 34px 0 30px;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  .lp-decision-title {
+    margin: 0;
+    max-width: 18ch;
+    font: 400 clamp(38px, 4.3vw, 64px)/1.02 var(--serif);
+    letter-spacing: -0.025em;
+  }
+
+  .lp-decision-title.is-current { color: var(--ink); }
+  .lp-decision-title.is-stale { color: var(--stale); }
+
+  .lp-decision-note {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 58ch;
+  }
+
+  .lp-decision-action {
+    min-width: 0;
+    border-left: 1px solid var(--rule);
+    padding-left: 32px;
+  }
+
+  .lp-decision-action .btn {
+    width: 100%;
+    padding: 16px 18px;
+    font-family: var(--serif);
+    font-size: 17px;
+  }
+
+  .lp-decision-action .prov-note { margin-top: 12px; }
+
+  .lp-outcome { grid-column: 1 / -1; margin-top: 0; }
+
+  .lp-disclosure-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 40px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .lp-impact { min-width: 0; }
+
+  .lp-impact h2 {
+    font: 400 clamp(32px, 3.4vw, 46px)/1.08 var(--serif);
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    max-width: 28ch;
+  }
+
+  .lp-impact .focal-lede { margin-bottom: 24px; }
+
+  .position-total {
+    padding: 4px 0 22px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 20px;
+  }
+
+  .position-total .figure-value {
+    display: block;
+    font-size: clamp(42px, 5vw, 64px);
+    margin-top: 2px;
+  }
+
+  .position-breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .position-breakdown .figure-value { font-size: 22px; }
+
+  .position-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .position-metric .figure-value { display: block; font-size: 26px; line-height: 1.2; margin: 3px 0 4px; }
+
+  .lp-boundary {
+    min-width: 0;
+    border-left: 1px solid var(--rule);
+    padding-left: 32px;
+  }
+
+  .lp-boundary .section-label { margin-bottom: 5px; }
+  .boundary-intro { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; }
+
+  .boundary-panel {
+    padding: 16px 18px;
+    background: #F4F1EB;
+  }
+
+  .boundary-panel + .boundary-panel { margin-top: 12px; }
+
+  .boundary-panel h3 {
+    font: 400 23px/1.2 var(--serif);
+    margin: 0 0 5px;
+  }
+
+  .boundary-panel p { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+
+  .boundary-list { margin: 0; padding: 0; list-style: none; }
+
+  .boundary-list li {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.85fr) minmax(0, 1.15fr);
+    gap: 14px;
+    padding: 9px 0;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+  }
+
+  .boundary-list li span:first-child { color: var(--muted); }
+  .boundary-list li strong { font-weight: 500; }
+  .boundary-panel.restricted-panel { background: #F7EFEB; }
+  .restricted-panel h3, .restricted-panel .restricted { color: var(--stale); }
+  .restricted-panel .boundary-list li { border-top-color: #E5D7D1; }
+
+  .enhanced-detail {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+  }
+
+  .provenance.key-dates { padding: 20px 0 10px; border-bottom: 0; }
+  .key-dates-heading { flex-basis: 100%; margin: 0 0 -4px; }
+  .key-dates .prov-item { flex: 1 1 220px; min-width: 0; }
+
   .outcome {
     margin-top: 16px;
     padding: 12px 14px;
@@ -391,11 +569,27 @@
   /* Mobile ---------------------------------------------------------- */
 
   @media (max-width: 720px) {
-    .wrap { padding: 0 16px 72px; }
+    .wrap { padding: 0 18px 64px; }
     .wordmark { font-size: 19px; }
     h1.focal { font-size: 25px; }
     .figure-value { font-size: 20px; }
     .asat { white-space: normal; }
+    .lp-decision { grid-template-columns: 1fr; gap: 20px; padding: 26px 0; }
+    .lp-decision-status { grid-template-columns: 48px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; align-items: start; }
+    .lp-decision-icon { width: 48px; height: 48px; margin-top: 2px; }
+    .lp-decision-title { font-size: 39px; }
+    .lp-decision-note { font-size: 15px; }
+    .lp-decision-action { border-left: 0; border-top: 1px solid var(--rule); padding: 18px 0 0; }
+    .lp-disclosure-grid { grid-template-columns: 1fr; gap: 26px; padding: 26px 0; }
+    .lp-impact h2 { font-size: 32px; }
+    .position-total .figure-value { font-size: 48px; }
+    .lp-boundary { border-left: 0; border-top: 1px solid var(--rule); padding: 22px 0 0; }
+    .position-breakdown { gap: 14px; }
+    .position-breakdown .figure-value { font-size: 19px; }
+    .position-metrics { grid-template-columns: 1fr; gap: 12px; margin-top: 16px; padding-top: 14px; }
+    .position-metric .figure-value { font-size: 20px; }
+    .boundary-panel { padding: 14px 12px; }
+    .boundary-list li { grid-template-columns: minmax(95px, 0.8fr) minmax(0, 1.2fr); gap: 10px; }
     th, td { padding: 8px 8px 8px 0; }
     .stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
     .stack tr { display: block; border-bottom: 1px solid var(--rule); padding: 10px 0; }
@@ -428,14 +622,15 @@
   </header>
 
   <div class="sampledata">
-    <b>Prototype, sample data</b>
-    <span>Azim Fund I is fictional. Every figure, party, and ledger reference on this page is invented to demonstrate the interface, and none of it is real. See <span class="mono">README.md</span> for what would be true in production.</span>
+    <b>Prototype · fictional data</b>
   </div>
 
   <main id="main" tabindex="-1">
     <div class="state" id="boot"><p>Reading the ledger.</p></div>
   </main>
 
+  <details class="prototype-controls">
+    <summary>Prototype controls</summary>
   <div class="controls">
     <fieldset class="controls-fieldset">
       <legend class="controls-label">Read as</legend>
@@ -454,7 +649,7 @@
       <legend class="controls-label">Simulate a disclosure failure</legend>
       <div class="segmented" id="staleness">
         <button type="button" data-role="on" aria-pressed="false">Valuation current, 23 Sep 2026</button>
-        <button type="button" data-role="off" aria-pressed="false">Valuation 94 days old, 23 Jun 2026</button>
+        <button type="button" data-role="off" aria-pressed="false">Valuation stale, 23 Jun 2026</button>
       </div>
       <p class="prov-note" style="margin:8px 0 0;max-width:58ch">This moves the as-at date rather than hiding anything. Staleness is derived from the date, never asserted, so the provenance strip, the as-at markers and the fund's willingness to accept a redemption can never disagree with each other.</p>
     </fieldset>
@@ -465,6 +660,7 @@
       <p class="prov-note" style="margin:8px 0 0;max-width:58ch">The index rebuilds your view from the ledger. If it is down, the ledger is still fine, and the page says so rather than showing an empty or partial view.</p>
     </fieldset>
   </div>
+  </details>
 
 </div>
 
@@ -475,7 +671,7 @@
  * Sample data. Fictional. Not real. See README.md.
  * ---------------------------------------------------------------- */
 
-var TODAY = new Date("2026-09-25T09:14:00Z");
+var TODAY = new Date("2026-09-29T09:14:00Z");
 
 var FUND = {
   name: "Azim Fund I",
@@ -680,9 +876,22 @@ function provenanceStrip() {
   var v = activeValuation();
   var age = valuationAgeDays();
   var stale = isStale();
-  var disclosureAge = daysBetween("2026-09-25", TODAY.toISOString().slice(0, 10));
+  var lpReader = currentReader().kind === "lp";
+  var deadline = new Date(v.date + "T00:00:00Z");
+  deadline.setUTCDate(deadline.getUTCDate() + 30);
+  var deadlineISO = deadline.toISOString().slice(0, 10);
+  var daysToDeadline = daysBetween(TODAY.toISOString().slice(0, 10), deadlineISO);
+  var deadlineNote = daysToDeadline > 0
+    ? "30 day redemption window closes (" + daysToDeadline + " days remaining)."
+    : daysToDeadline === 0
+      ? "30 day redemption window closes today."
+      : "30 day redemption window closed " + Math.abs(daysToDeadline) + " days ago.";
+  var accessItem = lpReader
+    ? '<div class="prov-item"><span class="prov-label">Next step deadline</span><span class="prov-value">' + fmtDate(deadlineISO) + '</span><span class="prov-note">' + deadlineNote + '</span></div>'
+    : '<div class="prov-item"><span class="prov-label">Your read access</span><span class="prov-value">' + esc(currentReader().rights) + '</span><span class="prov-note">Party <span class="mono">' + esc(currentReader().party || "not admitted") + '</span></span></div>';
 
-  return '<div class="provenance">' +
+  return '<section class="provenance key-dates" aria-label="Key dates">' +
+    '<h2 class="section-label key-dates-heading">Key dates</h2>' +
     '<div class="prov-item">' +
       '<span class="prov-label">Last valuation</span>' +
       '<span class="prov-value ' + (stale ? "is-stale" : "is-current") + '">' + fmtDate(v.date) + "</span>" +
@@ -690,15 +899,110 @@ function provenanceStrip() {
     "</div>" +
     '<div class="prov-item">' +
       '<span class="prov-label">Most recent disclosure</span>' +
-      '<span class="prov-value ' + (stale ? "is-stale" : "is-current") + '">' + fmtStamp("2026-09-25T09:14:00Z") + "</span>" +
+      '<span class="prov-value">' + fmtStamp("2026-09-25T09:14:00Z") + "</span>" +
       '<span class="prov-note">Material valuation event, ' + (stale ? "0 of 11 LPs have opened it." : "11 LPs entitled, identical payload.") + "</span>" +
     "</div>" +
-    '<div class="prov-item">' +
-      '<span class="prov-label">Your read access</span>' +
-      '<span class="prov-value">' + esc(currentReader().rights) + "</span>" +
-      '<span class="prov-note">Party <span class="mono">' + esc(currentReader().party || "not admitted") + "</span></span>" +
-    "</div>" +
-  "</div>";
+    accessItem +
+  "</section>";
+}
+
+function lpDecisionBlock() {
+  var stale = isStale();
+  var status = state.redemption;
+  var title = status === "pending" ? "Checking request" :
+    status === "done" ? "Redemption request accepted" :
+    stale ? "Redemption blocked" : "Redemption eligible";
+  var statusIcon = stale || status === "pending" ? "" : '<img class="lp-decision-icon" src="assets/circle-check.svg" alt="" aria-hidden="true">';
+  var note = stale
+    ? "Latest valuation is " + valuationAgeDays() + " days old; the fund agreement requires one within 30 days."
+    : "Latest valuation is " + valuationAgeDays() + " days old; the fund agreement allows 30 days.";
+  if (status === "done") note = "A current valuation exists, so the fund contract permitted this request.";
+  if (status === "pending") note = "Checking the valuation against the fund's 30-day disclosure window.";
+
+  var outcome = "";
+  if (status === "blocked") {
+    outcome = '<div class="outcome blocked lp-outcome" role="status"><p><b>Redemption refused by the fund contract.</b> A redemption requires a valuation struck within 30 days, and the last one is ' +
+      valuationAgeDays() + ' days old. This is not a Lookthrough policy. The rule is in the fund agreement and the ledger enforces it.</p></div>';
+  } else if (status === "done") {
+    outcome = '<div class="outcome done lp-outcome" role="status"><p><b>Redemption accepted in this prototype.</b> A current valuation exists, so the fund contract permitted it. In production this action would submit a transaction and wait for ledger confirmation.</p></div>';
+  } else if (status === "pending") {
+    outcome = '<div class="outcome lp-outcome" role="status"><p>Checking whether a current valuation is available.</p></div>';
+  }
+
+  return '<section class="lp-decision" aria-label="Redemption decision">' +
+    '<div class="lp-decision-status" aria-live="polite">' +
+      statusIcon +
+      '<h1 class="lp-decision-title ' + (stale ? "is-stale" : "is-current") + '">' + esc(title) + '</h1>' +
+      '<p class="lp-decision-note">' + esc(note) + '</p>' +
+    '</div>' +
+    '<div class="lp-decision-action">' +
+      '<button type="button" class="btn" id="redeemBtn"' + (status === "pending" ? " disabled" : "") + ">" +
+        (status === "pending" ? "Checking request" : status === "done" ? "Request accepted" : "Request redemption of " + money(100000)) +
+      "</button>" +
+      '<p class="prov-note">' + (stale
+        ? "A request can still be attempted here to demonstrate the contract refusal."
+        : "The rule lives in the fund agreement. This prototype simulates the request flow.") + '</p>' +
+    '</div>' + outcome +
+  '</section>';
+}
+
+function lpDisclosureBlock(r) {
+  var v = activeValuation();
+  var stale = isStale();
+  var totalPerUnit = v.navPerUnit + v.distributionsPerUnit;
+  var navValue = r.units * v.navPerUnit;
+  var totalValue = r.units * totalPerUnit;
+  var distValue = r.units * v.distributionsPerUnit;
+  var share = MATERIAL_EVENT.heldAt * (r.unitsPct / 100);
+  var enhanced = r.rights === "enhanced";
+  var enhancedDetail = enhanced
+    ? '<div class="enhanced-detail"><b>Enhanced rights detail</b><br>Northwind Robotics, held at ' + money(MATERIAL_EVENT.heldAt) + ' as at ' + fmtDate("2026-09-25") + '.</div>'
+    : "";
+  var restrictedEventRow = enhanced
+    ? ""
+    : '<li><span>Underlying event</span><strong><span class="restricted">Restricted</span></strong></li>';
+
+  return '<section class="lp-disclosure-grid" aria-label="Disclosed impact and information boundaries">' +
+    '<div class="lp-impact">' +
+      '<p class="section-label">Potential impact</p>' +
+      '<h2 class="focal">A confidential event may move your position by 80–140%.</h2>' +
+      '<p class="focal-lede">The fund disclosed the impact and withheld the transaction. You have enough to decide. You do not have enough to expose Meridian.</p>' +
+      '<div class="position-total">' +
+        '<span class="figure-label">Your position, as at ' + fmtDate(v.date) + '</span>' +
+        '<span class="figure-value">' + money(totalValue) + '</span>' +
+        asat(v.date, stale) +
+      '</div>' +
+      '<div class="position-breakdown">' +
+        figure("Your share of the position", money(share), "2026-09-25", false) +
+        figure("Struck net asset value", money(navValue), v.date, stale) +
+        figure("Distributions received", money(distValue), v.date, stale) +
+      '</div>' +
+      '<div class="position-metrics">' +
+        '<div class="position-metric"><span class="prov-label">Potential valuation impact</span><span class="figure-value">+' + MATERIAL_EVENT.lowPct + '% to +' + MATERIAL_EVENT.highPct + '%</span><span class="prov-note">Based on a confidential material event.</span></div>' +
+        '<div class="position-metric"><span class="prov-label">Illustrative increase to your position</span><span class="figure-value">+' + money(totalValue * MATERIAL_EVENT.lowPct / 100) + ' to +' + money(totalValue * MATERIAL_EVENT.highPct / 100) + '</span><span class="prov-note">Before the event is struck.</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="lp-boundary">' +
+      '<p class="section-label">What you can and cannot see</p>' +
+      '<div class="boundary-panel">' +
+        '<h3>Shown to you</h3>' +
+        '<p>You are entitled to know the impact, not the price, where a transaction is unannounced.</p>' +
+        '<ul class="boundary-list">' +
+          '<li><span>Valuation impact</span><strong>+' + MATERIAL_EVENT.lowPct + '% to +' + MATERIAL_EVENT.highPct + '%</strong></li>' +
+          '<li><span>Your position</span><strong>' + money(totalValue) + '</strong></li>' +
+          '<li><span>Your share of fund</span><strong>' + r.unitsPct.toFixed(1) + '%</strong></li>' +
+        '</ul>' + enhancedDetail +
+      '</div>' +
+      '<div class="boundary-panel restricted-panel">' +
+        '<h3>Withheld from you</h3>' +
+        '<p>Transaction details are restricted because disclosure would expose Meridian’s position in a bilateral negotiation.</p>' +
+        '<ul class="boundary-list">' +
+          restrictedEventRow +
+          '<li><span>Counterparty identity</span><strong><span class="restricted">Restricted</span></strong></li>' +
+        '</ul>' +
+      '</div>' +
+    '</div>' +
+  '</section>';
 }
 
 function materialEventBlock() {
@@ -898,6 +1202,10 @@ function emptyStateBlock() {
 
 function renderView() {
   var r = currentReader();
+  if (r.kind === "lp") {
+    return lpDecisionBlock() + lpDisclosureBlock(r) + provenanceStrip();
+  }
+
   var html = provenanceStrip();
 
   if (r.kind === "exited") { html += emptyStateBlock(); html += disclosureLogBlock(); return html; }

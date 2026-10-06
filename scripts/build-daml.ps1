@@ -22,7 +22,9 @@ if (-not $damlc) { throw "damlc.exe not found. Install the Daml SDK first." }
 # damlc.exe sits at <dist>/damlc.exe, so the distribution root is its parent.
 $distRoot = Split-Path -Parent $damlc
 $packageDb = Join-Path $distRoot "resources\pkg-db_dir"
-$log = Join-Path $env:TEMP "lookthrough-daml-build.log"
+$evidence = Join-Path $project "docs\evidence"
+New-Item -ItemType Directory -Path $evidence -Force | Out-Null
+$log = Join-Path $evidence "daml-build.txt"
 
 Write-Host "compiler : $damlc"
 Write-Host "package db: $packageDb"
@@ -51,6 +53,7 @@ $dar = Join-Path $project "lookthrough.dar"
 if (Test-Path $dar) {
   Write-Host ""
   Write-Host ("built lookthrough.dar, {0:N0} KB" -f ((Get-Item $dar).Length / 1KB))
+  Get-FileHash -LiteralPath $dar -Algorithm SHA256 | Format-List | Tee-Object -FilePath $log -Append
 } else {
   throw "build reported success but no DAR was produced"
 }

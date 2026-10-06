@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decision Desk visual comparison</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #eeeae3; font: 11px/1.2 Arial, sans-serif; color: #59554f; }
+  .comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100vw; height: 100vh; }
+  .panel { min-width: 0; height: 100vh; overflow: hidden; background: #fbfaf8; }
+  .label { height: 24px; padding: 6px 12px 4px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+  .view { position: relative; width: 100%; height: calc(100vh - 24px); overflow: hidden; background: #fbfaf8; }
+  .reference { position: absolute; top: 0; left: 0; display: block; width: 1487px; height: 1058px; transform: scale(.44); transform-origin: top left; }
+  iframe { position: absolute; top: 0; left: 0; width: 1472px; height: 1047px; border: 0; transform: scale(.444); transform-origin: top left; }
+</style>
+</head>
+<body>
+<main class="comparison" aria-label="Selected reference next to the current prototype">
+  <section class="panel"><div class="label">Selected direction · reference</div><div class="view"><img class="reference" src="lp-decision-direction.png" alt="Selected Decision Desk reference"></div></section>
+  <section class="panel"><div class="label">Current prototype · same LP state</div><div class="view"><iframe title="Current Lookthrough prototype" src="../web/prototype.html"></iframe></div></section>
+</main>
+</body>
+</html>

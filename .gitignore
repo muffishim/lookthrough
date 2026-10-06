@@ -4,6 +4,12 @@
 
 # Node
 node_modules/
+.runtime/
+tests/.deps/
+artifacts/
+.env
+.env.*
+!.env.example
 
 # Editor and OS noise
 .DS_Store
