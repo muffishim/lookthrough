@@ -1,0 +1,78 @@
+{
+  "mode": "canton-devnet",
+  "baseUrl": "http://localhost:6864",
+  "fundId": "AZIM-01",
+  "eventId": "EVENT-DEVNET-001",
+  "templateIds": {
+    "fundTemplate": "#lookthrough:Lookthrough:Fund",
+    "proposalTemplate": "#lookthrough:Lookthrough:PositionProposal",
+    "positionTemplate": "#lookthrough:Lookthrough:LpPosition",
+    "valuationTemplate": "#lookthrough:Lookthrough:Valuation",
+    "draftTemplate": "#lookthrough:Lookthrough:DisclosureDraft",
+    "receiptTemplate": "#lookthrough:Lookthrough:DisclosureReceipt",
+    "redemptionTemplate": "#lookthrough:Lookthrough:Redemption"
+  },
+  "commands": [
+    {
+      "label": "fund",
+      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "1220e27ee3782a450dccb5961533208e7fb8e3f8b787876b4b412a63212f98d0510b",
+      "completionOffset": 29
+    },
+    {
+      "label": "proposal-standard",
+      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "1220db22d13d3699b11f3d105ba38090d8d8b517b525629d4785415006d3a9ea6039",
+      "completionOffset": 32
+    },
+    {
+      "label": "accept-standard",
+      "actAs": "lookthrough-lp-standard::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "1220b062e7b6ec0d5aa01271255af11b326f5d105f1cec048217818324eeeba6abea",
+      "completionOffset": 35
+    },
+    {
+      "label": "proposal-enhanced",
+      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "122008288e35b77f39c9745d41b1b548f85d6decbf1c1bc38bb766a1195ac8e96cbe",
+      "completionOffset": 38
+    },
+    {
+      "label": "accept-enhanced",
+      "actAs": "lookthrough-lp-enhanced::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "12206e95998a40fb9e36342a54b23de56912739b92f274205f75a6585a59367fc0af",
+      "completionOffset": 41
+    },
+    {
+      "label": "valuation",
+      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "12209a442143fa09482ec48268ccd9f1049cf062ae8946a9843f5f100541d0095279",
+      "completionOffset": 44
+    },
+    {
+      "label": "prepare-disclosure",
+      "actAs": "lookthrough-gp::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "1220c3bae9fcde33c2b1cb8d8181225696c55e4954d4fdce9a85692fdc75e67a780a",
+      "completionOffset": 47
+    },
+    {
+      "label": "approve-disclosure",
+      "actAs": "lookthrough-reviewer::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "1220a47567fa470b6bb69587bd35eb18f11d8e7487a4f0224bcca000a32221e238ee",
+      "completionOffset": 50
+    },
+    {
+      "label": "redemption-standard",
+      "actAs": "lookthrough-lp-standard::12205d08afa433c12b81fb6d33498d2f413aa4b13236e3f4071e366ee468aafe64c4",
+      "updateId": "1220114eb055318fc9ccbc99cd605d9c493636d90fb96f04daca1be0a34634c03cc6",
+      "completionOffset": 53
+    }
+  ],
+  "fundContractId": "00e6f26b07b3cff6c4d6569c8d23d99a80fdc5ce4ff6656d84e6385ac3f562af63ca121220ae03bd6f94ac49bb2dab88214007f633c64c6ed676690f144f00aab7667d6383",
+  "fundContractIdAfterValuation": "0079e544ea7791e5bbc231385b01f92f30d96f5e94600aae187bf257be718b39a1ca121220532a8bf930f459ede40562aee39d3eaa7a3ad5681c5fc1d53771195bec2be37f",
+  "receiptQuery": {
+    "returned": 3,
+    "template": "#lookthrough:Lookthrough:DisclosureReceipt"
+  },
+  "redemptionContractId": "00018108290dc35d7e8b43ca3ca6bc7dc652bf7a7c53595bc0488578b91a5850e4ca12122050b70b4c36aa88520b9f00c8ff17dd475b8f4f1377e9822aadf6401e622cf490"
+}

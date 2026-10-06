@@ -129,19 +129,36 @@ export function createCantonClient(options = {}) {
 }
 
 export function templateId(module, entity) { return `#lookthrough:${module}:${entity}`; }
-export function createCommand(template, createArguments) { return { CreateCommand: { templateId: template, createArguments } }; }
+
+function damlJson(value) {
+  if (Array.isArray(value)) return value.map(damlJson);
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, damlJson(item)]));
+  return typeof value === "number" ? String(value) : value;
+}
+
+export function createCommand(template, createArguments) { return { CreateCommand: { templateId: template, createArguments: damlJson(createArguments) } }; }
 export function exerciseCommand(template, contractId, choice, choiceArgument = {}) {
-  return { ExerciseCommand: { templateId: template, contractId, choice, choiceArgument } };
+  return { ExerciseCommand: { templateId: template, contractId, choice, choiceArgument: damlJson(choiceArgument) } };
+}
+function createdEvent(entry) {
+  return entry?.contractEntry?.JsActiveContract?.createdEvent
+    || entry?.contractEntry?.createdEvent || entry?.contractEntry?.created_event
+    || entry?.activeContract?.createdEvent || entry?.createdEvent || entry;
+}
+function sameTemplate(actual, expected) {
+  if (!expected) return true;
+  if (!actual) return false;
+  const core = id => String(id).split(":").slice(-2).join(":");
+  return actual === expected || core(actual) === core(expected);
 }
 export async function waitForActiveContract(client, { party, template, predicate = () => true, attempts = 5 } = {}) {
   for (let attempt = 0; attempt < attempts; attempt++) {
     const response = await client.activeContracts({ party, includeCreatedEventBlob: true });
     const entries = Array.isArray(response) ? response : response.activeContracts || response.active_contracts || response;
-    const found = (Array.isArray(entries) ? entries : []).map(entry => entry.contractEntry || entry.activeContract || entry)
-      .map(entry => entry.createdEvent || entry.created_event || entry.created || entry).find(event => {
-        const id = event.templateId || event.template_id;
-        return (!template || id === template) && predicate(event);
-      });
+    const found = (Array.isArray(entries) ? entries : []).map(createdEvent).find(event => {
+      const id = event.templateId || event.template_id;
+      return sameTemplate(id, template) && predicate(event);
+    });
     if (found) return found;
     await sleep(500 * (attempt + 1));
   }

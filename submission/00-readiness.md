@@ -4,19 +4,20 @@ Target track: **Investment Infrastructure: Funds, DAOs & Governance Tools**.
 
 ## Verified working
 
-- Public repository: `https://github.com/muffishim/lookthrough`. **Only the first commit is pushed; the workspace app, server, tests and submission material are not yet in it.**
+- Public repository: `https://github.com/muffishim/lookthrough` at `24d4c41` (47 files, including the MVP, tests and submission material). Changes after that commit are still local.
 - Local role-based MVP: `npm start`, with manager, administrator, standard LP, enhanced LP and auditor paths.
 - Compiled Daml source and DAR build script (`scripts/build-daml.ps1`).
 - **12 Daml Script tests execute on a real Daml ledger service** (`scripts/test-daml.ps1`, no node or network required). They cover stale-valuation refusal, the exact 30-day boundary, restatement rejection, future valuation rejection, recipient privacy, reviewer separation, pending drafts surviving position replacement, partial redemption, and the rights upgrade. JUnit evidence in `docs/evidence/daml-junit.xml`.
-- 14 Node workflow, authorization, privacy, persistence and Canton adapter tests (`npm test`).
+- 15 Node workflow, authorization, privacy, persistence and Canton adapter tests (`npm test`).
 - 15 static checks (`npm run verify`).
 - Fresh UX audit screenshots and demo script from `docs/audit-2026-10-04.md`.
+- **The full five-party workflow executes end to end against a real Canton participant.** `npm run devnet:execute` uploads the DAR and submits fund creation, both position proposals and acceptances, a valuation, disclosure preparation, reviewer approval and a partial redemption, nine commands in total, at offsets 26 to 53. Reproducible against the local Canton 3.5.6 sandbox; ledger proof in `docs/evidence/devnet-proof.json`.
 - DevNet adapter and reproducible smoke command in `scripts/devnet-smoke.mjs`.
 
 ## Still required before final platform submission
 
-- **Push the workspace to the public repository.** Everything above the first commit is local only, so the published repo does not yet contain the MVP, tests or submission material.
-- Run the authenticated DevNet smoke path and publish the resulting public proof or demo video. This needs a token or OIDC credentials plus five party IDs from the Season 3 organisers. **No node hosting is required**, only the shared participant endpoint in `.env.example`.
+- **Push the pending changes.** The Canton command serialization fix, the ACS read fix and the executed-run proof are local only.
+- **Run the same workflow against the shared Season 3 DevNet participant** and publish that proof. The local Canton run above proves the adapter and the contract; the shared participant is what judges can inspect. This needs a token or OIDC credentials plus five party IDs from the Season 3 organisers. **No node hosting is required**, only the shared participant endpoint in `.env.example`.
 - Complete the project profile and select one official track.
 - Confirm the account has accumulated and burned 1,000 Mana and has at least one journal entry.
 - Publish the demo or a video of no more than five minutes, pitch material covering problem, Canton use, target users, GTM and validation, and any required team information.

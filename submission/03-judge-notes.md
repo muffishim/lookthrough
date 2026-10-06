@@ -14,7 +14,7 @@
 
 ## Canton proof
 
-`daml/src/Lookthrough/Lookthrough.daml` is the contract model. `server/canton.mjs` uses the authenticated JSON Ledger API v2; `server/devnet-bridge.mjs` maps the UI actions to Daml choices; `scripts/devnet-smoke.mjs --execute` is the reproducible five-party path, including a partial redemption request. The repository does not claim a live DevNet transaction until `docs/evidence/devnet-proof.json` is generated from the participant.
+`daml/src/Lookthrough/Lookthrough.daml` is the contract model. `server/canton.mjs` uses the authenticated JSON Ledger API v2; `server/devnet-bridge.mjs` maps the UI actions to Daml choices; `scripts/devnet-smoke.mjs --execute` is the reproducible five-party path, including a partial redemption request. `docs/evidence/devnet-proof.json` records that path executed against a Canton 3.5.6 participant: nine submitted commands at offsets 26 to 53, ending in the partial redemption request. The same command is intended for the shared Season 3 participant once credentials arrive.
 
 ## Evidence
 

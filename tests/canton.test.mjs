@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createCantonClient, createCommand, templateId } from "../server/canton.mjs";
+import { createCantonClient, createCommand, exerciseCommand, templateId } from "../server/canton.mjs";
 
 test("Canton v2 adapter uses ledger-end offset and eventFormat for ACS reads", async () => {
   const originalFetch = globalThis.fetch;
@@ -29,4 +29,11 @@ test("Canton v2 adapter uses ledger-end offset and eventFormat for ACS reads", a
 test("Canton command helpers emit JSON Ledger API v2 command envelopes", () => {
   const command = createCommand(templateId("Lookthrough", "Fund"), { fundId: "AZIM-01" });
   assert.deepEqual(command, { CreateCommand: { templateId: "#lookthrough:Lookthrough:Fund", createArguments: { fundId: "AZIM-01" } } });
+});
+
+test("numeric Daml values are sent as strings because Int and Decimal are not JSON numbers", () => {
+  const created = createCommand(templateId("Lookthrough", "Fund"), { disclosureIntervalDays: 30, auditors: ["auditor"], latestValuation: null });
+  assert.deepEqual(created.CreateCommand.createArguments, { disclosureIntervalDays: "30", auditors: ["auditor"], latestValuation: null });
+  const exercised = exerciseCommand(templateId("Lookthrough", "Fund"), "cid", "StrikeValuation", { navPerUnit: 1.25, positionIds: ["cid-1"] });
+  assert.deepEqual(exercised.ExerciseCommand.choiceArgument, { navPerUnit: "1.25", positionIds: ["cid-1"] });
 });
