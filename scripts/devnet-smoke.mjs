@@ -10,7 +10,7 @@
 import { existsSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createCantonClient, CantonError, cantonConfig, createCommand, exerciseCommand, templateId, waitForActiveContract } from "../server/canton.mjs";
+import { createCantonClient, CantonError, cantonConfig, createCommand, exerciseCommand, templateId, waitForActiveContract, createdEvent, sameTemplate } from "../server/canton.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const config = cantonConfig();
@@ -90,7 +90,12 @@ async function main() {
   const draft = await find(parties.reviewer, draftTemplate, event => createArgs(event).eventId === eventId);
   await run("approve-disclosure", parties.reviewer, [exerciseCommand(draftTemplate, draft.contractId || draft.contract_id, "ApproveAndPublish", {})], [parties.reviewer, parties.standard, parties.enhanced, parties.auditor]);
   const receipts = await client.activeContracts({ party: parties.standard, includeCreatedEventBlob: true });
-  proof.receiptQuery = { returned: Array.isArray(receipts) ? receipts.length : (receipts.activeContracts?.length ?? receipts.active_contracts?.length ?? 0), template: receiptTemplate };
+  const visible = Array.isArray(receipts) ? receipts : (receipts.activeContracts || receipts.active_contracts || []);
+  proof.receiptQuery = {
+    returned: visible.filter(entry => sameTemplate(createdEvent(entry)?.templateId, receiptTemplate)).length,
+    party: parties.standard,
+    template: receiptTemplate
+  };
   writeFileSync(resolve(root, "docs/evidence/devnet-proof.json"), JSON.stringify(proof, null, 2) + "\n");
   console.log("DevNet workflow complete. Proof written to docs/evidence/devnet-proof.json");
 }

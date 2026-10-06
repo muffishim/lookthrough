@@ -65,7 +65,8 @@
   "fundContractId": "00e8f3ca1f74c88b9c5ba26818b58647072ed3100790b248c60d2bf8f341536c9dca121220896367623abc0326bb099b278a039d80e7e731df77db8210b1ff9590f5f9601b",
   "fundContractIdAfterValuation": "0073b8001328d935cad61f9fd5fd1826e9db198cbed28dfdf34e5f8bc23f1a7c19ca121220f8af334904c767fe1a1ae39595e1d2b14991ff089bc6682bb5bc5982a7a42ef6",
   "receiptQuery": {
-    "returned": 3,
+    "returned": 1,
+    "party": "lookthrough-lp-standard::122048952fdbab181869260d034a6331c3f676d0bb9b49dea087df38baa06f09bc64",
     "template": "#lookthrough:Lookthrough:DisclosureReceipt"
   }
 }
